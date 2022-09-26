@@ -1,12 +1,11 @@
 <template>
   <nav>
     <ul class="menu">
+      <li class="logo"><router-link to="/"><h1>Misimu</h1></router-link></li>
       <li class="item" :class="{ active: toggle }"><router-link to="/">HOME</router-link></li>
       <li class="item" :class="{ active: toggle }"><router-link to="/">FORECASTS</router-link></li>
-      <li class="item" :class="{ active: toggle }"><router-link to="/">ALERTS</router-link></li>
-      <li class="item" :class="{ active: toggle }"><router-link to="/">AGRICULTURE</router-link></li>
-      <li class="item" :class="{ active: toggle }"><router-link to="/">RELIEF AID</router-link></li>
-      <li class="item button" :class="{ active: toggle }"><router-link to="/login">Sign In</router-link></li>
+      <li class="item" :class="{ active: toggle }"><router-link to="/">NGOs</router-link></li>
+      <li class="item button" :class="{ active: toggle }"><router-link to="/login">Register</router-link></li>
       <li class="toggle" @click="toggleMenu()"><span class="bars"></span></li>
     </ul>
   </nav>

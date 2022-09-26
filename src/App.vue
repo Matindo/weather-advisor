@@ -1,8 +1,5 @@
 <template>
   <div id="app">
-    <div class="logo">
-      <h1>Misimu</h1>
-    </div>
     <Navbar />
     <router-view/>
   </div>
@@ -16,18 +13,15 @@ export default {
 </script>
 
 <style lang="scss">
-.logo {
-  width: 100vw;
-  display: flex;
-  align-content: center;
-  justify-content: center;
-  background-image: url('./assets/images/mountain-magic-hour.jpg');
-  background-position-x: center;
-  background-position-y: top;
-  background-repeat: no-repeat;
-  color: white;
-  h1 {
-    font-size: 5rem;
-  }
+:root {
+  --primary: #592f04;
+  --success: #1e790a;
+  --black: #050404;
+  --white: #e0e0e0;
+}
+
+#app {
+  background: var(--black);
+  color: var(--white);
 }
 </style>
