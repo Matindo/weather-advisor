@@ -1,13 +1,21 @@
 <template>
-  <div class="weather" :class="loadingText ? 'loading' : 'show'">
-    <h2 class="city">{{ weatherDetails.city }}</h2>
-    <h1 class="temp">{{ weatherDetails.temp }}</h1>
-    <div class="flex">
-      <img :src="weatherDetails.icon" alt="weather-icon" class="icon" />
-      <div class="description">{{ weatherDetails.description }}</div>
+  <div id="weather-widget">
+    <div class="weather" v-if="weatherDetails.status === ready">
+      <h2 class="city">{{ weatherDetails.city }}</h2>
+      <h1 class="temp">{{ weatherDetails.temp }}</h1>
+      <div class="flex">
+        <img :src="weatherDetails.icon" alt="weather-icon" class="icon" />
+        <div class="description">{{ weatherDetails.description }}</div>
+      </div>
+      <div class="humidity">{{ weatherDetails.humidity }}</div>
+      <div class="wind">{{ weatherDetails.wind }}</div>
     </div>
-    <div class="humidity">{{ weatherDetails.humidity }}</div>
-    <div class="wind">{{ weatherDetails.wind }}</div>
+    <div v-else>
+      <span id="loading">
+        <b-icon icon=""></b-icon>
+        <h3>Loading data</h3>
+      </span>
+    </div>
   </div>
 </template>
 
@@ -30,12 +38,19 @@ export default {
     }
   },
   mounted: function () {
-    console.log(this.weatherDetails)
+    document.getElementById('weather-widget').style.backgroundImage = `linear-gradient(to bottom, rgba(34, 34, 34, .5), rgba(5, 5, 5, .5)),url('https://source.unsplash.com/1600x900/?${this.weatherDetails.description}')`
   }
 }
 </script>
 
 <style lang="scss" scoped>
+#weather-widget {
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: inherit;
+}
 h1.temp {
   margin: 0;
   margin-bottom: 0.5em;
@@ -47,22 +62,5 @@ h1.temp {
 .description {
   text-transform: capitalize;
   margin-left: 8px;
-}
-.weather {
-  visibility: hidden;
-  max-height: 20px;
-  position: relative;
-}
-.weather.show {
-  visibility: visible;
-  max-height:max-content;
-}
-.weather.loading:after {
-  visibility: visible;
-  content: "Loading...";
-  color: var(--white);
-  position: absolute;
-  top: 0;
-  left: 20px;
 }
 </style>
