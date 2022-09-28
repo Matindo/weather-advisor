@@ -1,182 +1,121 @@
 <template>
-  <nav>
-    <ul class="menu">
-      <li class="logo"><router-link to="/"><h1>Misimu</h1></router-link></li>
-      <li class="item" :class="{ active: toggle }"><router-link to="/">HOME</router-link></li>
-      <li class="item" :class="{ active: toggle }"><router-link to="/">FORECASTS</router-link></li>
-      <li class="item" :class="{ active: toggle }"><router-link to="/">NGOs</router-link></li>
-      <li class="item button" :class="{ active: toggle }"><router-link to="/login">Register</router-link></li>
-      <li class="toggle" @click="toggleMenu()"><span class="bars"></span></li>
-    </ul>
-  </nav>
+  <b-navbar toggleable="lg" type="dark" class="navbar">
+    <b-navbar-brand href="#">Misimu</b-navbar-brand>
+
+    <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+
+    <b-collapse id="nav-collapse" is-nav>
+      <b-navbar-nav class="middle-nav">
+        <b-nav-item to="/" exact exact-active-class="active">HOME</b-nav-item>
+        <b-nav-item to="/forecasts" exact exact-active-class="active">WEATHER & FORECASTS</b-nav-item>
+        <b-nav-item to="/ngos" exact exact-active-class="active">RELIEF ORGANIZATIONS</b-nav-item>
+        <b-nav-item to="/accounts" exact exact-active-class="active">REGISTER</b-nav-item>
+      </b-navbar-nav>
+
+      <!-- Right aligned nav items>
+      <b-navbar-nav class="ml-auto mr-2">
+        <!b-nav-item to="/about" exact exact-active-class="active" v-show="user !== null">MY PAGE</b-nav-item>
+        <b-nav-item-dropdown right  v-if="profile.name !== '' && user.name !== null">
+          <! Using 'button-content' slot>
+          <template #button-content>
+            <em>{{profile.name}}</em>
+          </template>
+          <b-dropdown-item to="/profile" v-show="user !== null">My Profile</b-dropdown-item>
+          <b-dropdown-item @click="logout()" v-show="user !== null">Sign Out</b-dropdown-item>
+        </b-nav-item-dropdown>
+        <b-nav-item @click="login()" v-else>Sign In</b-nav-item>
+      </b-navbar-nav-->
+    </b-collapse>
+  </b-navbar>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'NavBar',
+  computed: {
+    ...mapGetters({
+      user: 'USER'
+    }),
+    profile: function () {
+      if (this.user === null) {
+        return { name: '', dpic: '' }
+      } else {
+        return { name: this.user.userName, dpic: this.user.picture }
+      }
+    }
+  },
   data: function () {
     return {
-      toggle: false
     }
   },
   methods: {
-    toggleMenu: function () {
-      this.toggle = !this.toggle
+    logout: function () {
+      // log user out and route to home page
+      this.$store.dispatch('LOG_OUT').then(() => {
+        this.$router.push('/')
+      })
+    },
+    login: function () {
+      this.$router.push('/account')
     }
   }
 }
 </script>
 
-<style scoped lang="scss">
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-nav {
-  background: #222;
+<style lang="scss" scoped>
+.navbar {
+  background-color: #222;
+  // background: linear-gradient(to bottom, var(--BGcolor), rgba(13, 13, 14, 0.8));
   padding: 5px 20px;
+  transition: 0.14s all ease-out;
+  color: rgb(198, 200, 202);
+  margin-bottom: 0;
 }
-ul {
-  list-style-type: none;
+.navbar-brand {
+  font-family: 'Lobster', cursive;
+  font-size: xx-large;
+  color: var(--white)
 }
-a {
-  color: white;
-  text-decoration: none;
-  transition: all ease-in-out .5s;
-}
-a:hover {
-  color: blueviolet;
-  text-decoration: none;
-}
-a:not(:hover) {
-  transition: all ease-in-out .02s;
-}
-.menu li {
-  font-size: 16px;
-  padding: 15px 5px;
-  a {
-    display: block;
-  }
-}
-.logo a {
-  font-size: larger;
-}
-.button.secondary {
-  border-bottom: 1px #444 solid;
-}
-.item:not(.button) a::after {
-  content: '';
-  position: absolute;
-  display: block;
-  height: .4em;
-  width: 0%;
-  background-color: blueviolet;
-  transition: all ease-in-out .4s;
-}
-.item:not(.button) a:hover::after { width: 100% }
-.item:not(.button) a:not(:hover)::after { transition: all ease-in-out .02s; }
-// Moblie menu style //
-.menu {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  * {
-    transition: all .5s;
-  }
-}
-.toggle {
-  cursor: pointer;
-  order: 1
-}
-.item.button {
-  order: 2;
-}
-.item {
+.middle-nav {
   width: 100%;
-  text-align: center;
-  order: 3;
-  display: none;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-left: auto;
 }
-.item.active {
-  display: block;
-}
-.bars {
-  background: #999;
+.nav-item::after {
+  content: '';
   position: relative;
-  display: inline-block;
-  width: 18px;
-  height: 2px;
+  display: block;
+  height: .2rem;
+  width: 0%;
+  background-color: antiquewhite;
 }
-.bars::before, .bars::after {
-  content: "";
-  display: inline-block;
-  width: 18px;
-  height: 2px;
-  background: #999;
-  position: absolute;
+.nav-item:hover{
+  transition: ease-in-out all .4s;
+  -moz-transition: ease-in-out all .4s;
+  -webkit-transition: ease-in-out all .4s;
+  color:antiquewhite;
+  text-decoration:none;
 }
-.bars::before {
-  top: 5px;
+.nav-item:hover::after{
+  transition: ease-in-out all .4s;
+  -moz-transition: ease-in-out all .4s;
+  -webkit-transition: ease-in-out all .4s;
+  height: .2rem;
+  width: 100%;
 }
-.bars::after {
-  top: -5px
+.nav-item a.active{
+  color: var(--brilliant-white);
 }
-//Tablet menu style //
-@media all and (min-width: 548px) {
-  .menu {
-    justify-content: center;
-  }
-  .logo {
-    flex: 1;
-  }
-  .item.button {
-    display: block;
-    order: 1;
-    width: auto;
-  }
-  .toggle { order: 2; }
-  .button a {
-    background: teal;
-    padding: 7px 15px;
-    border: 1px solid #006d6d;
-    border-radius: 50em;
-    text-decoration: none;
-  }
-  .button a:hover {
-    transition: all .3s;
-  }
-  .button:not(.secondary) a:hover {
-    background: #006d6d;
-    border-color: #005959;
-  }
-  .button.secondary { border: 0; }
-  .button.secondary a { background: transparent; }
-  .button.secondary a:hover {
-    color: #ddd;
-  }
+.nav-item:has(a.active)::after{
+  height: .2rem;
+  width: 100%;
+  background-color: var(--brilliant-white);
 }
-// Desktop view style //
-@media all and (min-width: 885px) {
-  .item {
-    display: block;
-    width: auto;
-    order: 1;
-    a {
-      position: relative;
-    }
-  }
-  .toggle {
-    display: none;
-  }
-  .logo { order: 0; }
-  .button { order: 2; }
-  .menu li {
-    padding: 15px 10px;
-    .button {
-      padding-right: 0;
-    }
-  }
+.navbar button.navbar-toggler {
+  color: var(--white);
 }
 </style>
