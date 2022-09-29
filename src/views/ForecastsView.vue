@@ -11,12 +11,12 @@
       <b-col id="current-weather" cols="12" md="6" lg="4">
         <WeatherWidget :weatherDetails="details"></WeatherWidget>
       </b-col>
-      <b-col id="forecast-weather" cols="12" md="auto">
-        <div id="day-forcast">
-          <h3>The rest of the day...</h3>
-        </div>
+      <b-col id="forecast-weather" cols="12" md="6" lg="8">
         <div id="week-forecast">
           <h3>The rest of the week...</h3>
+          <div id="casts">
+            <ForecastWidget v-for="forecast in weatherForecast" :key="forecast.day" :forecast="forecast" />
+          </div>
         </div>
       </b-col>
     </b-row>
@@ -27,10 +27,11 @@
 import WeatherWidget from '../components/WeatherWidget.vue'
 import { locationMixin } from '@/mixins/locationMixin'
 import { weatherMixin } from '@/mixins/weatherMixin'
+import ForecastWidget from '@/components/ForecastWidget.vue'
 
 export default {
   name: 'ForecastsView',
-  components: { WeatherWidget },
+  components: { WeatherWidget, ForecastWidget },
   mixins: [locationMixin, weatherMixin],
   data: function () {
     return {
@@ -121,9 +122,9 @@ button:hover {
   width: 100%;
   margin: 1em;
   display: flex;
-  justify-content: space-between;
+  justify-content: left;
   align-items: stretch;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 .weather-getter {
   margin-left: 1rem;
@@ -137,14 +138,26 @@ button:hover {
     width: 100%;
   }
 }
+#week-forecast {
+  width: 100%;
+}
+#casts {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  width: 100%;
+  padding: .5rem;
+  margin: 5px .2rem 10px .2rem;
+}
 
 @media all and (max-width: 548px){
   .carrd {
     justify-content: center;
     align-items: center;
-  }
-  .day-forecast, .week-forecast {
-    overflow-x: scroll;
+    flex-wrap: wrap;
   }
 }
 </style>

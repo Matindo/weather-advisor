@@ -55,7 +55,6 @@ export const weatherMixin = {
         d += 1
         this.weatherForecast.push(day)
       }
-      console.log(this.weatherForecast)
     }
   }
 }
