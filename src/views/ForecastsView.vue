@@ -7,17 +7,17 @@
       </button>
       <b-button class="weather-getter" variant="outline-success" pill @click="locationWeather()">Get Current Location's Weather</b-button>
     </div>
-    <b-row class="card">
+    <b-row class="carrd">
       <b-col id="current-weather" cols="12" md="6" lg="4">
-        <WeatherWidget :weatherDetails="weatherData"></WeatherWidget>
+        <WeatherWidget :weatherDetails="details"></WeatherWidget>
       </b-col>
-      <b-col id="forecast-weather">
-        <b-row id="day-forcast">
+      <b-col id="forecast-weather" cols="12" md="auto">
+        <div id="day-forcast">
           <h3>The rest of the day...</h3>
-        </b-row>
-        <b-row id="week-forecast">
+        </div>
+        <div id="week-forecast">
           <h3>The rest of the week...</h3>
-        </b-row>
+        </div>
       </b-col>
     </b-row>
   </b-container>
@@ -34,25 +34,37 @@ export default {
   mixins: [locationMixin, weatherMixin],
   data: function () {
     return {
-      searchQuery: ''
+      searchQuery: '',
+      details: {}
     }
   },
   methods: {
     search: function () {
       this.fetchCityWeather(this.searchQuery)
+      this.details = this.weatherData
     },
     locationWeather: function () {
       this.getLocation()
-      if (!this.error) {
-        this.fetchCoordinateWeather({ lon: this.longitude, lat: this.lattitude })
-      } else {
-        // show toast message with error
-      }
+      setTimeout(() => {
+        if (!this.error) {
+          this.fetchCoordinateWeather({ lon: this.longitude, lat: this.lattitude })
+          this.fetchCoordinateForecast({ lon: this.longitude, lat: this.lattitude })
+          this.details = this.weatherData
+        } else {
+          this.$bvToast.toast(this.message, {
+            title: 'Location Error',
+            variant: 'danger',
+            autoHideDelay: 5000,
+            appendToast: false
+          })
+        }
+      }, 1000)
     }
   },
   mounted: function () {
-    this.fetchCityWeather('Nairobi')
     document.getElementById('forecasts').style.backgroundImage = 'linear-gradient(to bottom, rgba(34, 34, 34, .95), rgba(5, 5, 5, .5)),url(\'https://source.unsplash.com/1600x900/?weather\')'
+    this.fetchCityWeather('Nairobi')
+    this.details = this.weatherData
   }
 }
 </script>
@@ -101,7 +113,7 @@ button:hover {
   background: var(--hover-grey);
   color: var(--black);
 }
-.card {
+.carrd {
   background: var(--bg-black);
   color: var(--white);
   padding: 2em;
@@ -109,12 +121,9 @@ button:hover {
   width: 100%;
   margin: 1em;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: stretch;
   flex-wrap: wrap;
-  * {
-    border: 1px solid blue;
-  }
 }
 .weather-getter {
   margin-left: 1rem;
@@ -130,7 +139,10 @@ button:hover {
 }
 
 @media all and (max-width: 548px){
-  .card { align-items: center; }
+  .carrd {
+    justify-content: center;
+    align-items: center;
+  }
   .day-forecast, .week-forecast {
     overflow-x: scroll;
   }

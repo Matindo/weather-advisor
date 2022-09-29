@@ -1,6 +1,12 @@
 <template>
   <div id="weather-widget">
-    <div class="weather" v-if="weatherDetails.status === ready">
+    <div id="no-data" v-if="loadingText">
+      <div id="loading">
+        <b-icon icon="arrow-clockwise" animation="spin" font-scale="4"></b-icon>
+        <h3>Loading data</h3>
+      </div>
+    </div>
+    <div class="weather" v-else>
       <h2 class="city">{{ weatherDetails.city }}</h2>
       <h1 class="temp">{{ weatherDetails.temp }}</h1>
       <div class="flex">
@@ -9,12 +15,6 @@
       </div>
       <div class="humidity">{{ weatherDetails.humidity }}</div>
       <div class="wind">{{ weatherDetails.wind }}</div>
-    </div>
-    <div v-else>
-      <span id="loading">
-        <b-icon icon=""></b-icon>
-        <h3>Loading data</h3>
-      </span>
     </div>
   </div>
 </template>
@@ -31,14 +31,12 @@ export default {
   computed: {
     loadingText: function () {
       if (this.weatherDetails.status === 'ready') {
+        document.getElementById('weather-widget').style.backgroundImage = `linear-gradient(to bottom, rgba(34, 34, 34, .5), rgba(5, 5, 5, .5)),url('https://source.unsplash.com/1600x900/?${this.weatherDetails.background}')`
         return false
       } else {
         return true
       }
     }
-  },
-  mounted: function () {
-    document.getElementById('weather-widget').style.backgroundImage = `linear-gradient(to bottom, rgba(34, 34, 34, .5), rgba(5, 5, 5, .5)),url('https://source.unsplash.com/1600x900/?${this.weatherDetails.description}')`
   }
 }
 </script>
@@ -50,6 +48,8 @@ export default {
   background-position: center;
   background-repeat: no-repeat;
   color: inherit;
+  padding: .9rem;
+  border-radius: 15px;
 }
 h1.temp {
   margin: 0;
@@ -62,5 +62,14 @@ h1.temp {
 .description {
   text-transform: capitalize;
   margin-left: 8px;
+}
+.no-data, .loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.loading {
+  flex-direction: column;
 }
 </style>
