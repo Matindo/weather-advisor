@@ -1,10 +1,13 @@
+import moment from 'moment'
+
 export const weatherMixin = {
   data: function () {
     return {
       apiKey: 'ed0b2d87cc61572f8ae096b3700e8d28',
       weatherData: {
         city: '', icon: '', description: '', temp: '', humidity: '', wind: '', status: '', background: ''
-      }
+      },
+      weatherForecast: []
     }
   },
   methods: {
@@ -39,6 +42,19 @@ export const weatherMixin = {
     },
     processForecast: function (data) {
       console.log(data)
+      var count
+      var d = 0
+      while (d < 5) {
+        count = (d - 1) * 8
+        const dateTime = moment(data.list[count].dt_txt)
+        const day = { day: d, date: dateTime, weather: [] }
+        for (var j = 0; j < 8; j++) {
+          day.weather.push(data.list[count])
+          count += 1
+        }
+        d += 1
+        this.weatherForecast.push(day)
+      }
     }
   }
 }
