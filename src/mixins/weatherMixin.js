@@ -45,8 +45,8 @@ export const weatherMixin = {
       var count
       var d = 0
       while (d < 5) {
-        count = (d - 1) * 8
-        const dateTime = moment(data.list[count].dt_txt)
+        count = d * 8
+        const dateTime = moment(data.list[count].dt_txt).format('L')
         const day = { day: d, date: dateTime, weather: [] }
         for (var j = 0; j < 8; j++) {
           day.weather.push(data.list[count])
@@ -55,6 +55,7 @@ export const weatherMixin = {
         d += 1
         this.weatherForecast.push(day)
       }
+      console.log(this.weatherForecast)
     }
   }
 }
