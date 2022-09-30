@@ -1,6 +1,6 @@
 <template>
   <div id="forecast-widget" class="mx-2 container">
-    <b-row class="date">{{forecast.date}}</b-row>
+    <b-row class="date"><h4>{{weekday}}</h4></b-row>
     <b-row class="early w-100" v-if="weathers.early.icon !== ''" align-v="center" align-h="between">
       <b-col cols="2">0600h</b-col>
       <b-col cols="7" class="desc"><img :src="`https://openweathermap.org/img/wn/${weathers.early.icon}.png`" alt="icon" class="icon" /> {{ weathers.early.weather }}</b-col>
@@ -46,6 +46,9 @@ export default {
     }
   },
   computed: {
+    weekday: function () {
+      return moment(this.forecast.date).format('dddd')
+    }
   },
   data: function () {
     return {
@@ -116,10 +119,11 @@ export default {
   text-transform: capitalize;
 }
 .early {
-  background-image: linear-gradient(to bottom, rgba(34, 34, 34, .25), rgba(5, 5, 5, .4)), url('../assets/images/mountain-magic-hour.jpg');
+  background-image: linear-gradient(to bottom, rgba(34, 34, 34, .25), rgba(5, 5, 5, .4)), url('../assets/images/jenna-lee-zFk1FdVSlOs-unsplash.jpg');
 }
 .morning {
-  background-image: linear-gradient(to bottom, rgba(34, 34, 34, .3), rgba(5, 5, 5, .5)), url('../assets/images/cloud-wrapped-mountain.jpg');
+  background-image: linear-gradient(to bottom, rgba(34, 34, 34, .3), rgba(5, 5, 5, .5)), url('../assets/images/hendrik-kespohl-UPnxtRNH8q8-unsplash.jpg');
+  background-position-y: center;
 }
 .noon {
   background-image: linear-gradient(to bottom, rgba(34, 34, 34, .3), rgba(5, 5, 5, .5)), url('../assets/images/humberto-arellano-vh_gSEGcbhk-unsplash.jpg');

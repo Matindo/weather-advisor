@@ -9,7 +9,7 @@
     </div>
     <b-row class="carrd">
       <b-col id="current-weather" cols="12" md="6" lg="4">
-        <WeatherWidget :weatherDetails="details"></WeatherWidget>
+        <WeatherWidget :weatherDetails="weatherData"></WeatherWidget>
         <b-row class="default mt-1" align-h="center" align-v="center">
           <b-col cols="12">
             <p style="text-align:justify;">Do you want to set this location as your default location for weather data and forecasts whenever you load this site?
@@ -53,14 +53,13 @@ export default {
   },
   data: function () {
     return {
-      searchQuery: '',
-      details: {}
+      searchQuery: ''
     }
   },
   methods: {
     search: function () {
       this.fetchCityWeather(this.searchQuery)
-      this.details = this.weatherData
+      this.fetchCityForecast(this.searchQuery)
     },
     locationWeather: function () {
       this.getLocation()
@@ -68,7 +67,7 @@ export default {
         if (!this.error) {
           this.fetchCoordinateWeather({ lon: this.longitude, lat: this.lattitude })
           this.fetchCoordinateForecast({ lon: this.longitude, lat: this.lattitude })
-          this.details = this.weatherData
+          this.searchQuery = ''
         } else {
           this.$bvToast.toast(this.message, {
             title: 'Location Error',
@@ -93,8 +92,8 @@ export default {
       this.fetchCityWeather(this.searchQuery)
       this.fetchCityForecast(this.searchQuery)
     } else if (this.location.length > 0) {
-      this.fetchCoordinateWeather({ lon: this.longitude, lat: this.lattitude })
-      this.fetchCoordinateForecast({ lon: this.longitude, lat: this.lattitude })
+      this.fetchCoordinateWeather({ lon: this.location[0], lat: this.location[1] })
+      this.fetchCoordinateForecast({ lon: this.location[0], lat: this.location[1] })
     } else {
       this.searchQuery = 'Nairobi'
       this.fetchCityWeather(this.searchQuery)

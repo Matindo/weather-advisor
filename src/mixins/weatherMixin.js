@@ -17,6 +17,7 @@ export const weatherMixin = {
       })
     },
     fetchCityForecast: function (city) {
+      this.weatherForecast.splice(0, this.weatherForecast.length)
       fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${this.apiKey}`).then((response) => response.json()).then((data) => {
         this.processForecast(data)
       })
@@ -27,6 +28,7 @@ export const weatherMixin = {
       })
     },
     fetchCoordinateForecast: function (coordinates) {
+      this.weatherForecast.splice(0, this.weatherForecast.length)
       fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${coordinates.lat}&lon=${coordinates.lon}&units=metric&appid=${this.apiKey}`).then((response) => response.json()).then((data) => {
         this.processForecast(data)
       })
@@ -46,7 +48,6 @@ export const weatherMixin = {
       this.weatherData.background = data.weather[0].main
     },
     processForecast: function (data) {
-      console.log(data)
       var count
       var d = 0
       while (d < 5) {

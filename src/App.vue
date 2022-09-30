@@ -29,6 +29,10 @@ export default {
       this.lastScrollPosition = currentScrollPosition
     }
   },
+  created: function () {
+    this.$store.dispatch('READ_DEFAULT_CITY')
+    this.$store.dispatch('READ_DEFAULT_LOCATION')
+  },
   mounted: function () {
     window.addEventListener('scroll', this.onScroll)
   },

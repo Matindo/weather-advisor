@@ -28,33 +28,44 @@ export default new Vuex.Store({
   mutations: {
     READ_CITY: function (state) {
       if (localStorage.getItem('defaultCity')) {
-        state.location = localStorage.getItem('defaultCity')
+        state.city = localStorage.getItem('defaultCity')
       }
     },
     READ_LOCATION: function (state) {
       if (localStorage.getItem('defaultLocation')) {
-        state.location = localStorage.getItem('defaultLocation')
+        const location = localStorage.getItem('defaultLocation')
+        state.location = JSON.parse(location)
       }
     },
     SAVE_CITY: function (state, city) {
       if (localStorage.getItem('defaultCity') !== '') {
         localStorage.removeItem('defaultCity')
       }
+      if (localStorage.getItem('defaultLocation') !== '') {
+        localStorage.removeItem('defaultLocation')
+        state.location.splice(0, state.location.length)
+      }
       localStorage.setItem('defaultCity', city)
+      state.city = city
     },
     SAVE_LOCATION: function (state, location) {
       if (localStorage.getItem('defaultLocation') !== '') {
         localStorage.removeItem('defaultLocation')
       }
-      localStorage.setItem('defaultLocation', location)
+      if (localStorage.getItem('defaultCity') !== '') {
+        localStorage.removeItem('defaultCity')
+        state.city = ''
+      }
+      localStorage.setItem('defaultLocation', JSON.stringify(location))
+      state.location = location
     }
   },
   actions: {
     SET_DEFAULT_CITY: function (context, city) {
       context.commit('SAVE_CITY', city)
     },
-    SAVE_DEFAULT_LOCATION: function (context, location) {
-      context.commit('SAVE_LOCATION')
+    SET_DEFAULT_LOCATION: function (context, location) {
+      context.commit('SAVE_LOCATION', location)
     },
     READ_DEFAULT_CITY: function (context) {
       context.commit('READ_CITY')
