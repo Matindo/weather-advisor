@@ -207,6 +207,10 @@ button:hover {
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
+    overflow-y: auto;
+    ::-webkit-scrollbar {
+      visibility: hidden;
+    }
   }
 }
 </style>

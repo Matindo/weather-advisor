@@ -8,8 +8,8 @@
       <b-navbar-nav class="middle-nav">
         <b-nav-item to="/" exact exact-active-class="active">HOME</b-nav-item>
         <b-nav-item to="/forecasts" exact exact-active-class="active">WEATHER & FORECASTS</b-nav-item>
-        <b-nav-item to="/ngos" exact exact-active-class="active">RELIEF ORGANIZATIONS</b-nav-item>
-        <b-nav-item to="/accounts" exact exact-active-class="active">REGISTER</b-nav-item>
+        <!--b-nav-item to="/ngos" exact exact-active-class="active">RELIEF ORGANIZATIONS</b-nav-item>
+        <b-nav-item to="/accounts" exact exact-active-class="active">REGISTER</b-nav-item-->
       </b-navbar-nav>
 
       <!-- Right aligned nav items>
