@@ -44,7 +44,6 @@ export default {
 <style lang="scss" scoped>
 #weather-widget {
   background-size: cover;
-  background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
   color: inherit;
@@ -71,5 +70,13 @@ h1.temp {
 }
 .loading {
   flex-direction: column;
+}
+
+@media all and (max-width: 768px){
+  #weather-widget {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 </style>

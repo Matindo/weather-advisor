@@ -1,36 +1,36 @@
 <template>
-  <div id="forecast-widget" class="mx-2">
-    <div class="date">{{forecast.date}}</div>
-    <div class="time early" v-if="weathers.early.icon !== ''">
-      <p>06:00AM:</p>
-      <p>{{ weathers.early.temp + '⁰C'}}</p>
-      <p class="desc"><img :src="`https://openweathermap.org/img/wn/${weathers.early.icon}.png`" alt="icon" class="icon" /> {{ weathers.early.weather }}</p>
-    </div>
-    <div class="time morning" v-if="weathers.morning.icon !== ''">
-      <p>09:00AM:</p>
-      <p>{{ weathers.morning.temp + '⁰C'}}</p>
-      <p class="desc"><img :src="`https://openweathermap.org/img/wn/${weathers.morning.icon}.png`" alt="icon" class="icon" /> {{ weathers.morning.weather }}</p>
-    </div>
-    <div class="time noon" v-if="weathers.noon.icon !== ''">
-      <p>12:00PM:</p>
-      <p>{{ weathers.noon.temp + '⁰C'}}</p>
-      <p class="desc"><img :src="`https://openweathermap.org/img/wn/${weathers.noon.icon}.png`" alt="icon" class="icon" /> {{ weathers.noon.weather }}</p>
-    </div>
-    <div class="time noon" v-if="weathers.afternoon.icon !== ''">
-      <p>15:00PM:</p>
-      <p>{{ weathers.afternoon.temp + '⁰C'}}</p>
-      <p class="desc"><img :src="`https://openweathermap.org/img/wn/${weathers.afternoon.icon}.png`" alt="icon" class="icon" /> {{ weathers.afternoon.weather }}</p>
-    </div>
-    <div class="time evening" v-if="weathers.evening.icon !== ''">
-      <p>18:00PM:</p>
-      <p>{{ weathers.evening.temp + '⁰C'}}</p>
-      <p class="desc"><img :src="`https://openweathermap.org/img/wn/${weathers.evening.icon}.png`" alt="icon" class="icon" /> {{ weathers.evening.weather }}</p>
-    </div>
-    <div class="time night" v-if="weathers.night.icon !== ''">
-      <p>21:00PM: </p>
-      <p>{{ weathers.night.temp + '⁰C'}}</p>
-      <p class="desc"><img :src="`https://openweathermap.org/img/wn/${weathers.night.icon}.png`" alt="icon" class="icon" /> {{ weathers.night.weather }}</p>
-    </div>
+  <div id="forecast-widget" class="mx-2 container">
+    <b-row class="date">{{forecast.date}}</b-row>
+    <b-row class="early w-100" v-if="weathers.early.icon !== ''" align-v="center" align-h="between">
+      <b-col cols="2">0600h</b-col>
+      <b-col cols="7" class="desc"><img :src="`https://openweathermap.org/img/wn/${weathers.early.icon}.png`" alt="icon" class="icon" /> {{ weathers.early.weather }}</b-col>
+      <b-col cols="3"> {{weathers.early.temp + '⁰C'}}</b-col>
+    </b-row>
+    <b-row class="morning w-100" v-if="weathers.morning.icon !== ''" align-v="center" align-h="between">
+      <b-col cols="2">0900h</b-col>
+      <b-col cols="7" class="desc"><img :src="`https://openweathermap.org/img/wn/${weathers.morning.icon}.png`" alt="icon" class="icon" /> {{ weathers.morning.weather }}</b-col>
+      <b-col cols="3">{{ weathers.morning.temp + '⁰C'}}</b-col>
+    </b-row>
+    <b-row class="noon w-100" v-if="weathers.noon.icon !== ''" align-v="center" align-h="between">
+      <b-col cols="2">1200h</b-col>
+      <b-col class="desc" cols="7"><img :src="`https://openweathermap.org/img/wn/${weathers.noon.icon}.png`" alt="icon" class="icon" /> {{ weathers.noon.weather }}</b-col>
+      <b-col cols="3">{{ weathers.noon.temp + '⁰C'}}</b-col>
+    </b-row>
+    <b-row class="noon w-100" v-if="weathers.afternoon.icon !== ''" align-v="center" align-h="between">
+      <b-col cols="2">1500h</b-col>
+      <b-col class="desc" cols="7"><img :src="`https://openweathermap.org/img/wn/${weathers.afternoon.icon}.png`" alt="icon" class="icon" /> {{ weathers.afternoon.weather }}</b-col>
+      <b-col cols="3">{{ weathers.afternoon.temp + '⁰C'}}</b-col>
+    </b-row>
+    <b-row class="evening w-100" v-if="weathers.evening.icon !== ''" align-v="center" align-h="between">
+      <b-col cols="2">1800h </b-col>
+      <b-col class="desc" cols="7"><img :src="`https://openweathermap.org/img/wn/${weathers.evening.icon}.png`" alt="icon" class="icon" /> {{ weathers.evening.weather }}</b-col>
+      <b-col cols="3">{{ weathers.evening.temp + '⁰C'}}</b-col>
+    </b-row>
+    <b-row class="night w-100" v-if="weathers.night.icon !== ''" align-v="center" align-h="between">
+      <b-col cols="2">2100h </b-col>
+      <b-col class="desc" cols="7"><img :src="`https://openweathermap.org/img/wn/${weathers.night.icon}.png`" alt="icon" class="icon" /> {{ weathers.night.weather }}</b-col>
+      <b-col cols="3">{{ weathers.night.temp + '⁰C'}}</b-col>
+    </b-row>
   </div>
 </template>
 
@@ -109,25 +109,11 @@ export default {
 <style lang="scss" scoped>
 #forecast-widget {
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
-  min-width: max-content;
-  width: 250px;
+  border-radius: 20px;
 }
-.time {
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  padding: .2rem .1rem;
-  width: 100%;
-  display: flex;
-  justify-content: left;
-  align-items: center;
-  flex-direction: row;
-  .desc {
-    text-transform: capitalize;
-  }
+.desc {
+  text-transform: capitalize;
 }
 .early {
   background-image: linear-gradient(to bottom, rgba(34, 34, 34, .25), rgba(5, 5, 5, .4)), url('../assets/images/mountain-magic-hour.jpg');

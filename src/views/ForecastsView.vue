@@ -10,12 +10,23 @@
     <b-row class="carrd">
       <b-col id="current-weather" cols="12" md="6" lg="4">
         <WeatherWidget :weatherDetails="details"></WeatherWidget>
+        <b-row class="default mt-1" align-h="center" align-v="center">
+          <b-col cols="12">
+            <p style="text-align:justify;">Do you want to set this location as your default location for weather data and forecasts whenever you load this site?
+            </p>
+          </b-col>
+          <b-col cols="12" md="8">
+            <b-button pill variant="outline-primary" @click="setDefaultWeatherLocation">Yes, Set Default Location</b-button>
+          </b-col>
+        </b-row>
       </b-col>
       <b-col id="forecast-weather" cols="12" md="6" lg="8">
         <div id="week-forecast">
-          <h3>The rest of the week...</h3>
+          <h2>This week's forecast: </h2>
           <div id="casts">
-            <ForecastWidget v-for="forecast in weatherForecast" :key="forecast.day" :forecast="forecast" />
+            <b-col v-for="forecast in weatherForecast" :key="forecast.day" class="mx-2 columns">
+              <ForecastWidget  :forecast="forecast" />
+            </b-col>
           </div>
         </div>
       </b-col>
@@ -28,11 +39,18 @@ import WeatherWidget from '../components/WeatherWidget.vue'
 import { locationMixin } from '@/mixins/locationMixin'
 import { weatherMixin } from '@/mixins/weatherMixin'
 import ForecastWidget from '@/components/ForecastWidget.vue'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'ForecastsView',
   components: { WeatherWidget, ForecastWidget },
   mixins: [locationMixin, weatherMixin],
+  computed: {
+    ...mapGetters({
+      city: 'CITY',
+      location: 'LOCATION'
+    })
+  },
   data: function () {
     return {
       searchQuery: '',
@@ -60,11 +78,29 @@ export default {
           })
         }
       }, 1000)
+    },
+    setDefaultWeatherLocation: function () {
+      if (this.searchQuery !== '') {
+        this.$store.dispatch('SET_DEFAULT_CITY', this.searchQuery)
+      } else {
+        this.$store.dispatch('SET_DEFAULT_LOCATION', [this.longitude, this.lattitude])
+      }
     }
   },
   mounted: function () {
+    if (this.city !== '') {
+      this.searchQuery = this.city
+      this.fetchCityWeather(this.searchQuery)
+      this.fetchCityForecast(this.searchQuery)
+    } else if (this.location.length > 0) {
+      this.fetchCoordinateWeather({ lon: this.longitude, lat: this.lattitude })
+      this.fetchCoordinateForecast({ lon: this.longitude, lat: this.lattitude })
+    } else {
+      this.searchQuery = 'Nairobi'
+      this.fetchCityWeather(this.searchQuery)
+      this.fetchCityForecast(this.searchQuery)
+    }
     document.getElementById('forecasts').style.backgroundImage = 'linear-gradient(to bottom, rgba(34, 34, 34, .95), rgba(5, 5, 5, .5)),url(\'https://source.unsplash.com/1600x900/?weather\')'
-    this.fetchCityWeather('Nairobi')
     this.details = this.weatherData
   }
 }
@@ -123,7 +159,7 @@ button:hover {
   margin: 1em;
   display: flex;
   justify-content: left;
-  align-items: stretch;
+  align-items: center;
   flex-wrap: nowrap;
 }
 .weather-getter {
@@ -151,9 +187,23 @@ button:hover {
   width: 100%;
   padding: .5rem;
   margin: 5px .2rem 10px .2rem;
+  &::-webkit-scrollbar {
+    height: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--success);
+    &:hover {
+      background: rgb(13, 80, 10);
+    }
+  }
 }
-
-@media all and (max-width: 548px){
+.columns {
+  min-width: 380px;
+}
+@media all and (max-width: 768px){
   .carrd {
     justify-content: center;
     align-items: center;

@@ -16,6 +16,11 @@ export const weatherMixin = {
         this.processWeather(data)
       })
     },
+    fetchCityForecast: function (city) {
+      fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${this.apiKey}`).then((response) => response.json()).then((data) => {
+        this.processForecast(data)
+      })
+    },
     fetchCoordinateWeather: function (coordinates) {
       fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${coordinates.lat}&lon=${coordinates.lon}&units=metric&appid=${this.apiKey}`).then((response) => response.json()).then((data) => {
         this.processWeather(data)
