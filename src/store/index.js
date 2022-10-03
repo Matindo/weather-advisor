@@ -58,6 +58,14 @@ export default new Vuex.Store({
       }
       localStorage.setItem('defaultLocation', JSON.stringify(location))
       state.location = location
+    },
+    SET_CITY: function (state, city) {
+      state.location.splice(0, state.location.length)
+      state.city = city
+    },
+    SET_LOCATION: function (state, location) {
+      state.city = ''
+      state.location = location
     }
   },
   actions: {
@@ -72,6 +80,12 @@ export default new Vuex.Store({
     },
     READ_DEFAULT_LOCATION: function (context) {
       context.commit('READ_LOCATION')
+    },
+    SET_CITY: function (context, city) {
+      context.commit('SET_CITY', city)
+    },
+    SET_LOCATION: function (context, location) {
+      context.commit('SET_LOCATION', location)
     }
   },
   modules: {

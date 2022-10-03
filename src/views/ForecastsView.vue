@@ -5,18 +5,18 @@
       <button class="search-button" @click="search()">
         <b-icon icon="search"></b-icon>
       </button>
-      <b-button class="weather-getter" variant="outline-success" pill @click="locationWeather()">Get Current Location's Weather</b-button>
+      <b-button class="weather-getter" variant="outline-light" pill @click="locationWeather()">Get Current Location's Weather</b-button>
     </div>
     <b-row class="carrd">
       <b-col id="current-weather" cols="12" md="6" lg="4">
         <WeatherWidget :weatherDetails="weatherData"></WeatherWidget>
-        <b-row class="default mt-1" align-h="center" align-v="center">
+        <b-row class="default mt-1 justify-content-md-center">
           <b-col cols="12">
-            <p style="text-align:justify;">Do you want to set this location as your default location for weather data and forecasts whenever you load this site?
+            <p style="text-align:center;">Do you want to set this location as your default location for weather data and forecasts whenever you load this site?
             </p>
           </b-col>
-          <b-col cols="12" md="8">
-            <b-button pill variant="outline-primary" @click="setDefaultWeatherLocation">Yes, Set Default Location</b-button>
+          <b-col cols="12" md="auto">
+            <b-button pill variant="outline-info" @click="setDefaultWeatherLocation">Yes, Set Default Location</b-button>
           </b-col>
         </b-row>
       </b-col>

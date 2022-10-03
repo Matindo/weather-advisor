@@ -64,7 +64,7 @@ export default {
       var currentHour = new Date().getHours()
       var timeOfDay = ''
       console.log(currentHour)
-      if (currentHour > 19 || currentHour < 6) {
+      if (currentHour >= 19 || currentHour < 6) {
         timeOfDay = 'night'
       } else if (currentHour > 6 && currentHour < 9) {
         timeOfDay = 'morning'
@@ -97,6 +97,8 @@ export default {
 }
 #home {
   margin-top: 0;
+  margin-bottom: 0;
+  padding-bottom: 2rem;
   background-size: cover;
   background-attachment: fixed;
   background-position: center;

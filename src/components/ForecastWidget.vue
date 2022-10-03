@@ -65,7 +65,7 @@ export default {
   methods: {
     splitWeathers: function () {
       const weatherz = this.forecast.weather
-      for (let i = 0; i < 8; i++) {
+      for (let i = 0; i < weatherz.length; i++) {
         const date = moment(weatherz[i].dt_txt).format('L')
         if (date === this.forecast.date) {
           const time = this.timeOfDay(weatherz[i].dt_txt)

@@ -2,13 +2,15 @@
   <div id="app">
     <Navbar />
     <router-view/>
+    <FootSection />
   </div>
 </template>
 
 <script>
 import Navbar from './components/Navbar.vue'
+import FootSection from './components/FootSection.vue'
 export default {
-  components: { Navbar },
+  components: { Navbar, FootSection },
   data: function () {
     return {
       showNavbar: true,

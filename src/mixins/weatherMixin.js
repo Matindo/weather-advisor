@@ -48,19 +48,16 @@ export const weatherMixin = {
       this.weatherData.background = data.weather[0].main
     },
     processForecast: function (data) {
-      var count
-      var d = 0
-      while (d < 5) {
-        count = d * 8
-        const dateTime = moment(data.list[count].dt_txt).format('L')
-        const day = { day: d, date: dateTime, weather: [] }
-        for (var j = 0; j < 8; j++) {
-          day.weather.push(data.list[count])
-          count += 1
-        }
-        d += 1
+      while (data.list.length > 0) {
+        const dateTime = moment(data.list[0].dt_txt).format('L')
+        const dayWeathers = data.list.filter(weatherItem => {
+          return moment(weatherItem.dt_txt).format('L') === dateTime
+        })
+        const day = { date: dateTime, weather: dayWeathers }
         this.weatherForecast.push(day)
+        data.list = data.list.filter(item => !(moment(item.dt_txt).format('L') === dateTime))
       }
+      console.log(this.weatherForecast)
     }
   }
 }
