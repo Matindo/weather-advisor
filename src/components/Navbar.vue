@@ -1,9 +1,6 @@
 <template>
   <b-navbar toggleable="lg" type="dark" class="navbar">
-    <b-navbar-brand href="#">Misimu</b-navbar-brand>
-
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-
     <b-collapse id="nav-collapse" is-nav>
       <b-navbar-nav class="middle-nav">
         <b-nav-item to="/" exact exact-active-class="active">HOME</b-nav-item>
@@ -66,7 +63,7 @@ export default {
 
 <style lang="scss" scoped>
 .navbar {
-  background-color: #222;
+  background-color: var(--navigator-bg);
   // background: linear-gradient(to bottom, var(--BGcolor), rgba(13, 13, 14, 0.8));
   padding: 5px 20px;
   transition: 0.14s all ease-out;
@@ -117,5 +114,14 @@ export default {
 }
 .navbar button.navbar-toggler {
   color: var(--white);
+}
+.nav-item {
+  display: block;
+  width: 100%;
+  border-right: 1px solid #999;
+  text-align: center;
+  &:last-child {
+    border-right: none;
+  }
 }
 </style>

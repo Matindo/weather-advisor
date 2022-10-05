@@ -2,7 +2,7 @@
   <div id="weather-widget">
     <div id="no-data" v-if="loadingText">
       <div id="loading">
-        <b-icon icon="arrow-clockwise" animation="spin" font-scale="4"></b-icon>
+        <load-spinner />
         <h3>Loading data</h3>
       </div>
     </div>
@@ -20,7 +20,9 @@
 </template>
 
 <script>
+import LoadSpinner from './LoadSpinner.vue'
 export default {
+  components: { LoadSpinner },
   name: 'WeatherWidget',
   props: {
     weatherDetails: {
@@ -70,6 +72,7 @@ h1.temp {
 }
 .loading {
   flex-direction: column;
+  justify-content: center;
 }
 
 @media all and (max-width: 768px){

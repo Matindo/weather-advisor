@@ -60,6 +60,17 @@
           ></b-form-checkbox-group>
         </b-form-group>
       </b-form-row>
+      <div style="overflow:auto;">
+        <div style="float:right;">
+          <b-button variant="outline-light" id="prevBtn" class="m-1" @click="navigate(-1)">Previous</b-button>
+          <b-button variant="outline-light" id="nextBtn" class="m-1" @click="navigate(1)">Next</b-button>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:40px;">
+        <span class="step"></span>
+        <span class="step"></span>
+        <span class="step"></span>
+      </div>
     </b-form>
   </div>
 </template>
@@ -78,6 +89,7 @@ export default {
   data: function () {
     return {
       show: true,
+      currentPage: 0,
       weatherOptions: menuOptions.weatherDataOptions,
       getEmail: 'no',
       getGram: 'no',
@@ -98,12 +110,91 @@ export default {
         this.show = false
       })
       this.show = true
+    },
+    showPage: function (pageNumber) {
+      const x = document.getElementsByClassName('sect')
+      x[pageNumber].style.display = 'flex'
+      // updste the Previous/Next buttons
+      if (pageNumber === 0) {
+        document.getElementById('prevBtn').style.display = 'none'
+      } else {
+        document.getElementById('prevBtn').style.display = 'inline'
+      }
+      if (pageNumber === (x.length - 1)) {
+        document.getElementById('nextBtn').innerHTML = 'Submit'
+      } else {
+        document.getElementById('nextBtn').innerHTML = 'Next'
+      }
+      // Displays the correct step indicator:
+      this.fixStepIndicator(pageNumber)
+    },
+    navigate: function (n) {
+      // Figure out which page to display
+      const x = document.getElementsByClassName('sect')
+      // Exit the function if any field in the current tab is invalid:
+      if (n === 1 && !this.validateForm()) {
+        return false
+      }
+      // Hide the current tab:
+      x[this.currentPage].style.display = 'none'
+      // Increase or decrease the current tab by 1:
+      this.currentPage = this.currentPage + n
+      // if you have reached the end of the form... :
+      if (this.currentPage >= x.length) {
+        // ...the form gets submitted:
+        this.submit()
+        return false
+      }
+      // Otherwise, display the correct tab:
+      this.showPage(this.currentPage)
+    },
+    fixStepIndicator: function (pageNumber) {
+      // This function removes the "active" class of all steps...
+      let i; const x = document.getElementsByClassName('step')
+      for (i = 0; i < x.length; i++) {
+        x[i].className = x[i].className.replace(' active', '')
+      }
+      // ... and adds the "active" class to the current step:
+      x[pageNumber].className += ' active'
+    },
+    validateForm: function () {
+      // This function deals with validation of the form fields
+      let i; let valid = true
+      const x = document.getElementsByClassName('sect')
+      const y = x[this.currentPage].getElementsByTagName('input')
+      // A loop that checks every input field in the current tab:
+      for (i = 0; i < y.length; i++) {
+        // If a field is empty...
+        if (y[i].value === '') {
+          // add an "invalid" class to the field:
+          y[i].className += ' invalid'
+          // and set the current valid status to false:
+          valid = false
+        }
+      }
+      // If the valid status is true, mark the step as finished and valid:
+      if (valid) {
+        document.getElementsByClassName('step')[this.currentPage].className += ' finish'
+      }
+      return valid // return the valid status}
     }
+  },
+  mounted: function () {
+    this.showPage(this.currentPage)
   }
 }
 </script>
 
 <style lang="scss" scoped>
+#register-form {
+  font-family: RaleWay;
+  background: #222;
+  color: var(--white);
+  padding: .5rem;
+  background-image: linear-gradient(to bottom, rgba(34, 34, 34, .15), rgba(5, 5, 5, .88), rgba(5, 5, 5, 1)),url('../assets/images/brian-tromp-VTYDkU-n3_s-unsplash.jpg');
+  background-position: center;
+  background-size: cover;
+}
 .form-row {
   display: flex;
   flex-direction: row;
@@ -115,7 +206,8 @@ export default {
 .sect {
   padding: .25rem;
   margin: .1rem;
-  border-bottom: 1px ridge rgb(175, 174, 174);
+  // border-bottom: 1px ridge rgb(175, 174, 174);
+  display: none;
 }
 .form-group, .decider {
   display: flex;
@@ -127,5 +219,21 @@ export default {
 }
 .form-control {
   margin-left: 5px;
+}
+.step {
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbbbbb;
+  border: none;
+  border-radius: 50%;
+  display: inline-block;
+  opacity: 0.5;
+}
+.step.active {
+  opacity: 1;
+}
+.step.finish {
+  background-color: #04AA6D;
 }
 </style>

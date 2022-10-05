@@ -43,7 +43,10 @@
         </b-col>
       </div>
     </b-row>
-    <b-modal id="modal-subscribe" size="xl" centered hide-footer hide-header>
+    <b-modal id="modal-subscribe" size="xl" hide-footer body-bg-variant="dark" body-text-variant="light" header-bg-variant="dark" header-text-variant="light" header-close-content="&times;" header-close-variant="dark" button-size="sm">
+      <template #modal-title>
+        <h1>Subscribe to Weather Alerts</h1>
+      </template>
       <register-form :presets="formOptions" />
     </b-modal>
   </b-container>

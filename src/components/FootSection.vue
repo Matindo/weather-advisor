@@ -51,7 +51,7 @@ export default {
 
 <style lang="scss" scoped>
 #foot-section {
-  background-color: #222;
+  background-color: var(--navigator-bg);
   // background: linear-gradient(to bottom, var(--BGcolor), rgba(13, 13, 14, 0.8));
   padding: 5px 20px;
   transition: 0.14s all ease-out;
