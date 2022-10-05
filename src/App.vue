@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <div class="tagline"></div>
     <Navbar />
     <router-view/>
     <FootSection />

@@ -1,6 +1,6 @@
 <template>
   <b-container id="home" fluid>
-    <b-jumbotron header="Welcome to your one-stop weather advisory web application, where we provide you with current weather information, weather forecasts and even weather alerts customized just for you, from any location, any time!" container-fluid="sm">
+    <b-jumbotron header="Get current weather information, forecasts and alerts customized just for you from any location, any time" container-fluid="sm">
     </b-jumbotron>
     <b-row id="forecast" class="my-5 p-2">
       <div class="w-100">

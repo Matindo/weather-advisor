@@ -2,16 +2,16 @@
   <div id="foot-section">
     <b-row id="footer" class="p-3 mx-2" align-h="even" align-v="stretch">
       <b-col id="main">
-        <span class="logo">MISIMU</span>
-        <b-button variant="outline-warning" class="w-100 my-2" block @click="$bvModal.show('modal-subscribe')">Subscribe to Get Weather Forecasts and Alerts</b-button>
+        <span class="logo"><img src='../assets/images/logo.png' class="logo-img" /><h1>Misimu</h1></span>
+        <b-button variant="outline-warning" class="w-100 my-2" block @click="$bvModal.show('modal-subscribe')">Get Weather Alerts</b-button>
       </b-col>
       <b-col id="links">
-        <h2>Navigate to: </h2>
-        <h5><router-link to="/" >Home</router-link></h5>
-        <h5><router-link to="/forecasts">Weather & Forecasts</router-link></h5>
+        <h2>Navigate </h2>
+        <h5 class="my-2"><router-link to="/" >Home</router-link></h5>
+        <h5 class="my-2"><router-link to="/forecasts">Weather & Forecasts</router-link></h5>
       </b-col>
       <b-col id="functions">
-        <h2>Your Weather: </h2>
+        <h2>Your Weather </h2>
         <b-input-group size="sm" class="my-2">
           <b-input-group-prepend is-text>
             <!--b-button variant="outline-light" @click="searchWeather()"--><b-icon icon="search"></b-icon><!--/b-button-->
@@ -59,16 +59,21 @@ export default {
   bottom: 0;
 }
 #main, #links, #functions {
+  display: flex;
   flex-direction: column;
-  h2 {
-    text-decoration: underline;
-  }
+  align-items: center;
+  justify-content: center;
   a {
     text-decoration: none;
     color: var(--white);
     &:hover {
       text-decoration: underline;
     }
+  }
+  h1 {
+    width: 100%;
+    font-weight: 900;
+    text-align: center;
   }
 }
 </style>
