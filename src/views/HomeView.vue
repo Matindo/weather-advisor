@@ -1,48 +1,70 @@
 <template>
   <b-container id="home" fluid>
-    <b-jumbotron header="Get current weather information, forecasts and alerts customized just for you from any location, any time" container-fluid="sm">
-    </b-jumbotron>
-    <b-row id="forecast" class="my-5 p-2">
-      <div class="w-100">
-        <h1>Forecasts</h1>
+    <section class="weather">
+      <span class="jumbotron1">
+        <h1>Get current weather and forecasts from any location, any time</h1>
+      </span>
+      <div class="search">
+        <input type="text" class="search-bar" placeholder="Search" v-model="searchQuery" @keyup.enter="search()" />
+        <button class="search-button" @click="search()">
+          <b-icon icon="search"></b-icon>
+        </button>
       </div>
-      <div class="content">
-        <b-col cols="12" md="6" class="right">
-          <p>Recieve the weather data for your area or region from an aaccurate source. Alse recieve weather forecasts for upto 8 days to prepare yourself for any events and activities that may be affected.</p>
-          <span class="more-button">
-            <b-button pill variant="outline-light" @click="$router.push('/forecasts')">
-              Go To Forecasts <b-icon icon="arrow-right-circle" style="width: 30px; height: 30px;"></b-icon>
-            </b-button>
-          </span>
-        </b-col>
+      <div class="location">
+        <b-button size="sm" variant="outline-light" pill @click="locationWeather()">Get Current Location's Weather</b-button>
       </div>
-    </b-row>
-    <b-row id="ngos" class="my-4 p-2">
-      <div class="w-100">
-        <h1 class="right">Relief Organizations</h1>
+      <div class="weather-bar">
+        <div class="current-weather">
+          <weather-widget :weatherDetails="weatherData" />
+          <p style="font-size: 1.2rem;">Do you want to set this location as your default location for weather data and forecasts whenever you load this site?</p>
+          <b-button pill variant="outline-info" @click="setDefaultWeatherLocation">Yes, Set Default Location</b-button>
+        </div>
+        <div class="forecast">
+          <div id="week-forecast">
+            <h2>This week's forecast: </h2>
+            <div id="casts">
+              <b-col v-for="forecast in weatherForecast" :key="forecast.day" class="mx-2 columns">
+                <ForecastWidget  :forecast="forecast" />
+              </b-col>
+            </div>
+          </div>
+        </div>
+        <div class="description">
+          <p style="text-align:center;">This is a 3-hour weather forecast for five days,starting from the time you refresh or reload this page.</p>
+        </div>
       </div>
-      <div class="content">
-        <b-col cols="12" md="6">
-          <p>Are you a relief organization that works in areas affected by adverse weather phenomena? We have alerts and advisories here for you to help you prepare and allocate your limited resources accordingly.</p>
-          <span class="more-button">
-            <b-button pill block variant="outline-warning" @click="$bvModal.show('modal-subscribe')">Request Information</b-button>
-          </span>
-        </b-col>
+    </section>
+    <section class="subscription">
+      <span class="jumbotron2">
+        <h1>Subscribe to get customized weather messages and alerts</h1>
+      </span>
+      <div class="regular-user">
+        <div class="type">
+          <div class="title">Regular User</div>
+          <div class="illustrate"><b-img src="../assets/images/Push notifications-cuate.png" alt="regular user" blank-color="warning" center height="300" width="300"></b-img></div>
+          <div class="info">You'll get daily alerts on weather forecasts you want to help you plan your daily activities.</div>
+          <b-button class="more p-0" size="sm" variant="outline-warning">Subscribe</b-button>
+        </div>
       </div>
-    </b-row>
-    <b-row id="accounts" class="mt-3 mb-2 p-2">
-      <div class="w-100">
-        <h1>Subscribe</h1>
+      <div class="farmer">
+        <div class="type">
+          <div class="title">Farmer</div>
+          <div class="illustrate"><b-img src="../assets/images/Farmer-rafiki.png" alt="farmer" blank-color="warning" center height="300" width="300"></b-img></div>
+          <div class="info">You'll get weekly and monthly forecasts and predictions to help you plan for your farm activities.</div>
+          <b-button class="more p-0" size="sm" variant="outline-success">Subscribe</b-button>
+        </div>
       </div>
-      <div class="content" >
-        <b-col cols="12" md="6" class="right">
-          <p>Are you a professional, student or citizen who would simply like to get weather notifications and predictions customized for your needs? Register with us and choose your mode of receiving weather alerts!</p>
-          <span class="more-button">
-            <b-button pill block variant="outline-success" @click="$bvModal.show('modal-subscribe')">Click to Subscribe</b-button>
-          </span>
-        </b-col>
+      <div class="organization">
+        <div class="type">
+          <div class="title">Relief Organization</div>
+          <div class="illustrate">
+            <b-img src="../assets/images/Humanitarian Help-pana.png" alt="ngo" blank-color="warning" center height="300" width="300"></b-img>
+          </div>
+          <div class="info">You'll get pre-empted weather alerts and warnings to help you prepare for relief activities where needed.</div>
+          <b-button class="more p-0" size="sm" variant="outline-danger">Subscribe</b-button>
+        </div>
       </div>
-    </b-row>
+    </section>
     <b-modal id="modal-subscribe" size="xl" hide-footer body-bg-variant="dark" body-text-variant="light" header-bg-variant="dark" header-text-variant="light" header-close-content="&times;" header-close-variant="dark" button-size="sm">
       <template #modal-title>
         <h1>Subscribe to Weather Alerts</h1>
@@ -54,28 +76,42 @@
 
 <script>
 import RegisterForm from '@/components/RegisterForm.vue'
+import WeatherWidget from '../components/WeatherWidget.vue'
+import { locationMixin } from '@/mixins/locationMixin'
+import { weatherMixin } from '@/mixins/weatherMixin'
+import ForecastWidget from '@/components/ForecastWidget.vue'
+import { mapGetters } from 'vuex'
+
 export default {
-  components: { RegisterForm },
   name: 'HomeView',
+  components: { RegisterForm, WeatherWidget, ForecastWidget },
+  mixins: [locationMixin, weatherMixin],
   data: function () {
     return {
-      formOptions: { ngo: false, farmer: false }
+      formOptions: { ngo: false, farmer: false },
+      searchQuery: ''
     }
   },
   computed: {
+    ...mapGetters({
+      city: 'CITY',
+      location: 'LOCATION'
+    }),
     daytime: function () {
       var currentHour = new Date().getHours()
       var timeOfDay = ''
       console.log(currentHour)
       if (currentHour >= 19 || currentHour < 6) {
         timeOfDay = 'night'
-      } else if (currentHour > 6 && currentHour < 9) {
+      } else if (currentHour >= 6 && currentHour < 9) {
         timeOfDay = 'morning'
-      } else if (currentHour > 9 && currentHour < 12) {
+      } else if (currentHour >= 9 && currentHour < 12) {
         timeOfDay = 'mid-morning'
-      } else if (currentHour > 12 && currentHour < 15) {
-        timeOfDay = 'noon'
-      } else if (currentHour > 15 && currentHour < 19) {
+      } else if (currentHour >= 12 && currentHour < 15) {
+        timeOfDay = 'midday'
+      } else if (currentHour >= 14 && currentHour < 16) {
+        timeOfDay = 'afternoon'
+      } else if (currentHour >= 16 && currentHour < 19) {
         timeOfDay = 'evening'
       }
       console.log(timeOfDay)
@@ -83,12 +119,48 @@ export default {
     }
   },
   methods: {
-    scrolldown: function () {
-      const first = document.getElementById('forecast')
-      first.scrollIntoView({ behaviour: 'smooth', block: 'atart', inline: 'center' })
+    search: function () {
+      this.fetchCityWeather(this.searchQuery)
+      this.fetchCityForecast(this.searchQuery)
+    },
+    locationWeather: function () {
+      this.getLocation()
+      setTimeout(() => {
+        if (!this.error) {
+          this.fetchCoordinateWeather({ lon: this.longitude, lat: this.lattitude })
+          this.fetchCoordinateForecast({ lon: this.longitude, lat: this.lattitude })
+          this.searchQuery = ''
+        } else {
+          this.$bvToast.toast(this.message, {
+            title: 'Location Error',
+            variant: 'danger',
+            autoHideDelay: 5000,
+            appendToast: false
+          })
+        }
+      }, 1000)
+    },
+    setDefaultWeatherLocation: function () {
+      if (this.searchQuery !== '') {
+        this.$store.dispatch('SET_DEFAULT_CITY', this.searchQuery)
+      } else {
+        this.$store.dispatch('SET_DEFAULT_LOCATION', [this.longitude, this.lattitude])
+      }
     }
   },
   mounted: function () {
+    if (this.city !== '') {
+      this.searchQuery = this.city
+      this.fetchCityWeather(this.searchQuery)
+      this.fetchCityForecast(this.searchQuery)
+    } else if (this.location.length > 0) {
+      this.fetchCoordinateWeather({ lon: this.location[0], lat: this.location[1] })
+      this.fetchCoordinateForecast({ lon: this.location[0], lat: this.location[1] })
+    } else {
+      this.searchQuery = 'Nairobi'
+      this.fetchCityWeather(this.searchQuery)
+      this.fetchCityForecast(this.searchQuery)
+    }
     document.getElementById('home').style.backgroundImage = `linear-gradient(to bottom, rgba(34, 34, 34, .95), rgba(5, 5, 5, .5)),url('https://source.unsplash.com/1600x900/?${this.daytime}')`
   }
 }
@@ -96,75 +168,230 @@ export default {
 
 <style lang="scss" scoped>
 * {
+  box-sizing: border-box;
   font-size: 1.5rem;
 }
+
 #home {
-  margin-top: 0;
-  margin-bottom: 0;
-  padding-bottom: 2rem;
+  display: grid;
+  grid-template-rows: min-content max-content;
+  grid-template-columns: minmax(auto, 100%);
+  grid-template-areas:
+    "weather-section"
+    "subscription-section";
+  align-items: center;
+  justify-content: center;
   background-size: cover;
   background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
 }
+section {
+  margin-top: 2rem;
+  margin-inline: 1rem;
+}
+.weather {
+  grid-area: weather-section;
+  display: grid;
+  grid-template-rows: min-content min-content auto;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-areas:
+    "jumbo jumbo jumbo jumbo jumbo jumbo"
+    "search search search button button button"
+    "weather weather weather weather weather weather"
+    ;
+  grid-row-gap: 1rem;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.search {
+  grid-area: search;
+  justify-self: right;
+  display: flex;
+  justify-content: right;
+  width: 100%;
+}
+
+.location {
+  grid-area: button;
+  justify-self: left;
+  display: flex;
+  justify-content: left;
+  width: 100%;
+  button {
+    font-size: 1rem;
+    padding: 5px;
+    font-weight: bolder;
+    margin-left: 2rem;
+  }
+}
+.weather-bar {
+  grid-area: weather;
+  display: grid;
+  grid-template-rows: min-content min-content;
+  grid-template-columns: 1fr 2fr;
+  grid-template-areas:
+    "widget forecast forecast"
+    "widget describe describe"
+  ;
+  column-gap: 1rem;
+  justify-content: space-around;
+  align-items: flex-start;
+}
+.current-weather {
+  grid-area: widget;
+  display: grid;
+  grid-template:
+    [row1-start] "weather-widget" auto [row1-end]
+    [row2-start] "action-call" min-content [row2-end]
+    [row3-start] "button-action" min-content [row3-end]
+    / auto
+  ;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+  button {
+    font-size: 1rem;
+    padding: 5px;
+    font-weight: bolder;
+    margin-inline: 1rem;
+  }
+}
+
+.forecast {
+  grid-area: forecast;
+}
+
+.description {
+  grid-area: describe;
+}
+
+.subscription {
+  grid-area: subscription-section;
+  display: grid;
+  grid-template-rows: min-content min-content;
+  grid-template-columns: 50px 1fr 1fr 1fr 50px;
+  grid-row-gap: 1rem;
+  column-gap: 1.5rem;
+  align-items: center;
+  justify-content: space-around;
+  margin-bottom: 10px;
+  .regular-user {
+    grid-area: 2 / 2 / 3 / 2;
+  }
+  .farmer {
+    grid-area: 2 / 3 / 3 / 4;
+  }
+  .organization {
+    grid-area: 2 / 4 / 3 / 5;
+  }
+}
+.organization, .farmer, .regular-user {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+}
 h1 {
   color: var(--white);
-  font-size: 36px;
+  font-size: 56px;
+}
+input.search-bar {
+  border: none;
+  outline: none;
+  border-radius: 24px;
+  background: var(--bg-black);
+  color: var(--white);
+  font-family: inherit;
+  margin-right: 1rem;
+  padding-inline: 0.7rem;
+}
+.search-button {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  border: none;
+  height: 32px;
+  width: 35px;
+  outline: none;
+  background: var(--bg-black);
+  color: var(--brilliant-white);
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
 }
 
-.jumbotron {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
+.jumbotron1, .jumbotron2 {
   text-align: center;
   font-family: Georgia, 'Times New Roman', Times, serif;
-  margin: 0 1rem 3rem 1rem;
-  padding-top: 3rem;
 }
-.row {
+
+.jumbotron1 {
+  grid-area: jumbo;
+}
+.jumbotron2 {
+  grid-area: 1 / 1 / 2 / end;
+}
+#casts {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  flex-wrap: nowrap;
   align-items: center;
-  margin-right: 6rem;
-  margin-left: 6rem;
-  border-radius: 1rem;
-}
-
-#forecast {
-  background-image: linear-gradient(to right, rgba(34, 34, 34, .15), rgba(5, 5, 5, .88), rgba(5, 5, 5, 1)),url('../assets/images/hendrik-kespohl-UPnxtRNH8q8-unsplash.jpg');
-  background-position: top center;
-  background-size: cover;
-}
-
-#ngos {
-  background-image: linear-gradient(to left, rgba(34, 34, 34, .15) 0%, rgba(5, 5, 5, .9) 60%, rgba(5, 5, 5, 1) 100%),url('../assets/images/swapnil-dwivedi-Bwbq9_AuZ7c-unsplash.jpg');
-  background-position: top left;
-  background-size: cover;
-}
-
-#accounts {
-  background-image: linear-gradient(to right, rgba(34, 34, 34, .15) 0%, rgba(5, 5, 5, .88) 60%, rgba(5, 5, 5, 1) 100%),url('../assets/images/brett-jordan-LPZy4da9aRo-unsplash.jpg');
-  background-position: center left;
-  background-size: cover;
-}
-
-.right {
-  float: right;
-  justify-content: right;
-}
-
-.more-button {
+  overflow-x: scroll;
+  overflow-y: hidden;
   width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-@media all and (max-width: 540px) {
-  .row {
-    margin-left: 1rem;
-    margin-right: 1rem;
+  padding: .5rem;
+  &::-webkit-scrollbar {
+    height: 10px;
   }
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--success);
+    &:hover {
+      background: rgb(13, 80, 10);
+    }
+  }
+}
+.columns {
+  min-width: 380px;
+}
+.type {
+  display: grid;
+  grid-template-rows: min-content auto min-content min-content;
+  grid-template-columns: auto;
+  width: 100%;
+  height: 100%;
+  align-items: flex-start;
+  justify-content: center;
+  .title {
+    grid-area: 1 / 1 / 2 / 2;
+    text-align: center;
+    font-weight: bolder;
+  }
+  .illustrate {
+    grid-area: 2 / 1 / 3 / 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+  .info {
+    grid-area: 3 / 1 / 4 / 2;
+    text-align: center;
+    width: 100%;
+    padding: 15px;
+    font-size: 1.1rem;
+  }
+  .more {
+    grid-area: 4 / 1 / 5 / 2;
+    width: 70%;
+    justify-self: center;
+    font-size: 1.1rem;
+  }
+}
+@media all and (max-width: 540px) {
 }
 </style>

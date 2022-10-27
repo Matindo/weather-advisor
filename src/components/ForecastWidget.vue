@@ -114,6 +114,9 @@ export default {
   display: flex;
   flex-direction: column;
   border-radius: 20px;
+  .row:not(.date) {
+    font-size: 1rem;
+  }
 }
 .desc {
   text-transform: capitalize;

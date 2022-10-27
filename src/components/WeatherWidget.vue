@@ -59,6 +59,7 @@ h1.temp {
 .flex {
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 .description {
   text-transform: capitalize;
