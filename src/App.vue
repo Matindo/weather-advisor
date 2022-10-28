@@ -1,17 +1,17 @@
 <template>
   <div id="app">
-    <!-- Navbar /-->
+    <Navbar />
     <router-view/>
     <FootSection />
   </div>
 </template>
 
 <script>
-// import Navbar from './components/Navbar.vue'
+import Navbar from './components/Navbar.vue'
 import FootSection from './components/FootSection.vue'
 
 export default {
-  components: { FootSection },
+  components: { Navbar, FootSection },
   created: function () {
     this.$store.dispatch('READ_DEFAULT_CITY')
     this.$store.dispatch('READ_DEFAULT_LOCATION')
@@ -25,6 +25,7 @@ export default {
   --success: #1e790a;
   --black: #050404;
   --bg-black: #000000d0;
+  --section-black: #333;
   --component-bg: #7c7c7c2b;
   --white: #e0e0e0;
   --brilliant-white: #ffffff;

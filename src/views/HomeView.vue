@@ -1,5 +1,5 @@
 <template>
-  <b-container id="home" fluid>
+  <div id="home">
     <section class="weather">
       <span class="jumbotron1">
         <h1>Get current weather and forecasts from any location, any time</h1>
@@ -30,7 +30,7 @@
           </div>
         </div>
         <div class="description">
-          <p style="text-align:center;">This is a 3-hour weather forecast for five days,starting from the time you refresh or reload this page.</p>
+          <p>*this is a 3-hour weather forecast for five days, starting from the time you refresh or reload this page</p>
         </div>
       </div>
     </section>
@@ -41,15 +41,15 @@
       <div class="regular-user">
         <div class="type">
           <div class="title">Regular User</div>
-          <div class="illustrate"><b-img src="../assets/images/Push notifications-cuate.png" alt="regular user" blank-color="warning" center height="300" width="300"></b-img></div>
+          <div class="illustrate"><img src="../assets/images/Push notifications-cuate.png" alt="regular" /></div>
           <div class="info">You'll get daily alerts on weather forecasts you want to help you plan your daily activities.</div>
-          <b-button class="more p-0" size="sm" variant="outline-warning">Subscribe</b-button>
+          <b-button class="more p-0" size="sm" variant="outline-primary">Subscribe</b-button>
         </div>
       </div>
       <div class="farmer">
         <div class="type">
           <div class="title">Farmer</div>
-          <div class="illustrate"><b-img src="../assets/images/Farmer-rafiki.png" alt="farmer" blank-color="warning" center height="300" width="300"></b-img></div>
+          <div class="illustrate"><img src="../assets/images/Farmer-rafiki.png" alt="farmer" /></div>
           <div class="info">You'll get weekly and monthly forecasts and predictions to help you plan for your farm activities.</div>
           <b-button class="more p-0" size="sm" variant="outline-success">Subscribe</b-button>
         </div>
@@ -58,20 +58,20 @@
         <div class="type">
           <div class="title">Relief Organization</div>
           <div class="illustrate">
-            <b-img src="../assets/images/Humanitarian Help-pana.png" alt="ngo" blank-color="warning" center height="300" width="300"></b-img>
+            <img src="../assets/images/Humanitarian Help-pana.png" alt="ngo" />
           </div>
           <div class="info">You'll get pre-empted weather alerts and warnings to help you prepare for relief activities where needed.</div>
           <b-button class="more p-0" size="sm" variant="outline-danger">Subscribe</b-button>
         </div>
       </div>
     </section>
-    <b-modal id="modal-subscribe" size="xl" hide-footer body-bg-variant="dark" body-text-variant="light" header-bg-variant="dark" header-text-variant="light" header-close-content="&times;" header-close-variant="dark" button-size="sm">
+    <b-modal ref="modal-subscribe" size="xl" hide-footer body-bg-variant="dark" body-text-variant="light" header-bg-variant="dark" header-text-variant="light" header-close-content="&times;" header-close-variant="dark" button-size="sm">
       <template #modal-title>
         <h1>Subscribe to Weather Alerts</h1>
       </template>
       <register-form :presets="formOptions" />
     </b-modal>
-  </b-container>
+  </div>
 </template>
 
 <script>
@@ -96,27 +96,7 @@ export default {
     ...mapGetters({
       city: 'CITY',
       location: 'LOCATION'
-    }),
-    daytime: function () {
-      var currentHour = new Date().getHours()
-      var timeOfDay = ''
-      console.log(currentHour)
-      if (currentHour >= 19 || currentHour < 6) {
-        timeOfDay = 'night'
-      } else if (currentHour >= 6 && currentHour < 9) {
-        timeOfDay = 'morning'
-      } else if (currentHour >= 9 && currentHour < 12) {
-        timeOfDay = 'mid-morning'
-      } else if (currentHour >= 12 && currentHour < 15) {
-        timeOfDay = 'midday'
-      } else if (currentHour >= 14 && currentHour < 16) {
-        timeOfDay = 'afternoon'
-      } else if (currentHour >= 16 && currentHour < 19) {
-        timeOfDay = 'evening'
-      }
-      console.log(timeOfDay)
-      return timeOfDay
-    }
+    })
   },
   methods: {
     search: function () {
@@ -146,6 +126,12 @@ export default {
       } else {
         this.$store.dispatch('SET_DEFAULT_LOCATION', [this.longitude, this.lattitude])
       }
+    },
+    showSubscribeModal: function () {
+      this.$refs['modal-subscribe'].show()
+    },
+    hideSubscribeModal: function () {
+      this.$refs['modal-subscribe'].hide()
     }
   },
   mounted: function () {
@@ -161,7 +147,9 @@ export default {
       this.fetchCityWeather(this.searchQuery)
       this.fetchCityForecast(this.searchQuery)
     }
-    document.getElementById('home').style.backgroundImage = `linear-gradient(to bottom, rgba(34, 34, 34, .95), rgba(5, 5, 5, .5)),url('https://source.unsplash.com/1600x900/?${this.daytime}')`
+    this.$root.$on('footerSubscribe', () => {
+      this.showSubscribeModal()
+    })
   }
 }
 </script>
@@ -187,8 +175,9 @@ export default {
   background-repeat: no-repeat;
 }
 section {
-  margin-top: 2rem;
-  margin-inline: 1rem;
+  padding-top: 1rem;
+  padding-inline: 3rem;
+  padding-bottom: 3rem;
 }
 .weather {
   grid-area: weather-section;
@@ -203,6 +192,7 @@ section {
   grid-row-gap: 1rem;
   align-items: center;
   justify-content: space-around;
+  background-color: rgb(16, 5, 41);
 }
 
 .search {
@@ -238,6 +228,7 @@ section {
   column-gap: 1rem;
   justify-content: space-around;
   align-items: flex-start;
+  padding-top: 1rem;
 }
 .current-weather {
   grid-area: widget;
@@ -266,6 +257,10 @@ section {
 
 .description {
   grid-area: describe;
+  p {
+    text-align: center;
+    font-size: .9rem;
+  }
 }
 
 .subscription {
@@ -278,6 +273,12 @@ section {
   align-items: center;
   justify-content: space-around;
   margin-bottom: 10px;
+  width: 100%;
+  color: var(--black);
+  background-color: var(--brilliant-white);
+  span > h1 {
+    color: var(--navigation-bg);
+  }
   .regular-user {
     grid-area: 2 / 2 / 3 / 2;
   }
@@ -342,6 +343,7 @@ input.search-bar {
   overflow-y: hidden;
   width: 100%;
   padding: .5rem;
+  background-color: var(--component-bg);
   &::-webkit-scrollbar {
     height: 10px;
   }
@@ -360,12 +362,15 @@ input.search-bar {
 }
 .type {
   display: grid;
-  grid-template-rows: min-content auto min-content min-content;
+  grid-template-rows: min-content min-content min-content min-content;
   grid-template-columns: auto;
   width: 100%;
   height: 100%;
   align-items: flex-start;
   justify-content: center;
+  border: 1px solid var(--component-bg);
+  background-color: var(--component-bg);
+  border-radius: 12px;
   .title {
     grid-area: 1 / 1 / 2 / 2;
     text-align: center;
@@ -374,9 +379,11 @@ input.search-bar {
   .illustrate {
     grid-area: 2 / 1 / 3 / 2;
     display: flex;
-    align-items: center;
     justify-content: center;
-    width: 100%;
+    img {
+      width: auto;
+      height: 300px;
+    }
   }
   .info {
     grid-area: 3 / 1 / 4 / 2;
@@ -390,6 +397,7 @@ input.search-bar {
     width: 70%;
     justify-self: center;
     font-size: 1.1rem;
+    margin-bottom: 22px;
   }
 }
 @media all and (max-width: 540px) {

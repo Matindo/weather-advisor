@@ -1,28 +1,18 @@
 <template>
-  <b-navbar toggleable="lg" type="dark" class="navbar">
-    <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-    <b-collapse id="nav-collapse" is-nav>
-      <b-navbar-nav class="middle-nav">
-        <b-nav-item to="/" exact exact-active-class="active">HOME</b-nav-item>
-        <b-nav-item to="/forecasts" exact exact-active-class="active">WEATHER & FORECASTS</b-nav-item>
-        <!--b-nav-item to="/ngos" exact exact-active-class="active">RELIEF ORGANIZATIONS</b-nav-item>
-        <b-nav-item to="/accounts" exact exact-active-class="active">REGISTER</b-nav-item-->
-      </b-navbar-nav>
-
-      <!-- Right aligned nav items>
-      <b-navbar-nav class="ml-auto mr-2">
-        <!b-nav-item to="/about" exact exact-active-class="active" v-show="user !== null">MY PAGE</b-nav-item>
-        <b-nav-item-dropdown right  v-if="profile.name !== '' && user.name !== null">
-          <! Using 'button-content' slot>
-          <template #button-content>
-            <em>{{profile.name}}</em>
-          </template>
-          <b-dropdown-item to="/profile" v-show="user !== null">My Profile</b-dropdown-item>
-          <b-dropdown-item @click="logout()" v-show="user !== null">Sign Out</b-dropdown-item>
-        </b-nav-item-dropdown>
-        <b-nav-item @click="login()" v-else>Sign In</b-nav-item>
-      </b-navbar-nav-->
-    </b-collapse>
+  <b-navbar type="dark" id="navbar">
+    <b-navbar-brand to="/" class="brand">
+      <img src="../assets/images/logo.png" height="48" width="48" alt="logo" />
+      <span class="title">Misimu</span>
+    </b-navbar-brand>
+    <b-navbar-nav>
+      <b-nav-item-dropdown dropright no-caret>
+        <template #button-content>
+          <div class="button-cnt"><b-icon font-scale="2" icon="check2-circle"></b-icon>Subscriptions</div>
+        </template>
+        <b-dropdown-item @click="login()" v-show="!isSubscribed">Subscribe</b-dropdown-item>
+        <b-dropdown-item @click="$router.push('/profile')" v-show="isSubscribed">My Subscriptions</b-dropdown-item>
+      </b-nav-item-dropdown>
+    </b-navbar-nav>
   </b-navbar>
 </template>
 
@@ -35,16 +25,28 @@ export default {
     ...mapGetters({
       user: 'USER'
     }),
-    profile: function () {
-      if (this.user === null) {
-        return { name: '', dpic: '' }
-      } else {
-        return { name: this.user.userName, dpic: this.user.picture }
+    isSubscribed: function () {
+      return this.user.subscriptions !== null
+    },
+    daytime: function () {
+      var currentHour = new Date().getHours()
+      var timeOfDay = ''
+      console.log(currentHour)
+      if (currentHour >= 19 || currentHour < 6) {
+        timeOfDay = 'night'
+      } else if (currentHour >= 6 && currentHour < 9) {
+        timeOfDay = 'morning'
+      } else if (currentHour >= 9 && currentHour < 12) {
+        timeOfDay = 'mid-morning'
+      } else if (currentHour >= 12 && currentHour < 15) {
+        timeOfDay = 'midday'
+      } else if (currentHour >= 14 && currentHour < 16) {
+        timeOfDay = 'afternoon'
+      } else if (currentHour >= 16 && currentHour < 19) {
+        timeOfDay = 'evening'
       }
-    }
-  },
-  data: function () {
-    return {
+      console.log(timeOfDay)
+      return timeOfDay
     }
   },
   methods: {
@@ -57,23 +59,31 @@ export default {
     login: function () {
       this.$router.push('/account')
     }
+  },
+  mounted: function () {
+    document.getElementsById('navbar').style.backgroundImage = `linear-gradient(to bottom, rgba(34, 34, 34, .05), rgba(5, 5, 5, .15)),url('https://source.unsplash.com/1600x900/?${this.daytime}')`
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.navbar {
-  background-color: var(--navigator-bg);
-  // background: linear-gradient(to bottom, var(--BGcolor), rgba(13, 13, 14, 0.8));
-  padding: 5px 20px;
+#navbar {
   transition: 0.14s all ease-out;
   color: rgb(198, 200, 202);
-  margin-bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+  padding-inline: 2rem;
+  padding-bottom: 0;
 }
 .navbar-brand {
   font-family: 'Lobster', cursive;
-  font-size: xx-large;
-  color: var(--white)
+  font-size: 2rem;
+  color: var(--white);
+  display: flex;
+  justify-content: left;
+  align-items: center;
 }
 .middle-nav {
   width: 100%;
@@ -86,7 +96,7 @@ export default {
   content: '';
   position: relative;
   display: block;
-  height: .2rem;
+  height: .2.8rem;
   width: 0%;
   background-color: antiquewhite;
 }
@@ -123,5 +133,9 @@ export default {
   &:last-child {
     border-right: none;
   }
+}
+.button-cnt {
+  display: flex;
+  align-items: center;
 }
 </style>

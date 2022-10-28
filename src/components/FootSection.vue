@@ -7,13 +7,16 @@
     <div id="footer-content">
       <h3 class="weather">Get Your Weather</h3>
       <b-input-group size="sm" class="my-2 search">
-        <b-input-group-prepend is-text @click="searchWeather()">
+        <b-input-group-append is-text @click="searchWeather()">
           <b-icon icon="search"></b-icon>
-        </b-input-group-prepend>
+        </b-input-group-append>
         <b-form-input type="search" placeholder="Search any city's weather" v-model="city" @keypress.enter="search()"></b-form-input>
       </b-input-group>
       <b-button class="weather-getter my-0" variant="outline-light" pill @click="locationWeather()">Get Current Location's Weather</b-button>
-      <b-button variant="outline-warning" class="w-100 my-2 subscribe" block @click="$bvModal.show('modal-subscribe')">Get Weather Alerts</b-button>
+      <div class="subscribe">
+        <h3>Get Notified</h3>
+        <b-button variant="outline-warning" class="w-50 my-2" block @click="subscribe()">Subscribe & Get Alerts</b-button>
+      </div>
       <div class="socials">
         <ul class="social-links">
           <li class="social-link"><a id="discord" href="#"><b-icon font-scale="2" icon="discord"></b-icon></a></li>
@@ -40,10 +43,13 @@ export default {
   methods: {
     locationWeather: function () {
       this.getLocation()
-      this.$store.dispatch('SET_LOCATION', [this.longitude, this.lattitude]).then(() => this.$router.push('/forecasts'))
+      this.$store.dispatch('SET_LOCATION', [this.longitude, this.lattitude]).then(() => this.$router.push('/'))
     },
     search: function () {
-      this.$store.dispatch('SET_CITY', this.city).then(() => this.$router.push('/forecasts'))
+      this.$store.dispatch('SET_CITY', this.city).then(() => this.$router.push('/'))
+    },
+    subscribe: function () {
+      this.$root.$emit('footerSubscribe')
     }
   }
 }
@@ -108,7 +114,17 @@ export default {
 }
 .subscribe {
   grid-area: 3 / 1 / 4 / end;
-  margin-top: 1rem;
+  padding-top: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+}
+.weather, .subscribe {
+  h3 {
+    font-weight: normal;
+  }
 }
 .socials {
   grid-area: 4 / 1 / end / end;
