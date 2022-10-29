@@ -14,18 +14,16 @@
           </b-form-group>
         </b-col>
         <b-col cols="12" lg="6">
-          <b-form-group id="email" label="Email:" label-for="input-email" label-cols-lg="4" content-cols-lg  :invalid-feedback="invalidNameFeedback">
-            <b-form-input id="input-email" v-model="formData.email" type="email" required trim></b-form-input>
+          <b-form-group id="pword" label="Password:" label-for="input-pword" label-cols-lg="4" content-cols-lg  :invalid-feedback="invalidNameFeedback">
+            <b-form-input id="input-pword" v-model="formData.pass" type="password" required></b-form-input>
           </b-form-group>
         </b-col>
         <b-col cols="12" lg="6">
-          <b-form-group id="phone" label="Telephone:" label-for="input-phone" label-cols-lg="4" content-cols-lg :invalid-feedback="invalidNameFeedback">
-            <b-form-input id="input-phone" v-model="formData.phone" type="telephone" required trim></b-form-input>
+          <b-form-group id="confirm-pword" label="Confirm Password:" label-for="input-conpass" label-cols-lg="4" content-cols-lg :invalid-feedback="invalidNameFeedback">
+            <b-form-input id="input-conpass" v-model="formData.passConfirmed" type="password" required></b-form-input>
           </b-form-group>
         </b-col>
-      </b-form-row>
-      <b-form-row class="sect" title="Contact Info">
-        <h3 class="w-100">How Do You Want To Receive Information?</h3>
+        <h3 class="w-100">Contact Details</h3>
         <div class="w-100 decider py-2">
           <b-form-checkbox id="check-email" v-model="getEmail" value="yes" unchecked-value="no"> E-mail</b-form-checkbox>
           <b-form-checkbox id="check-gram" v-model="getGram" value="yes" unchecked-value="no"> Telegram</b-form-checkbox>
@@ -44,21 +42,28 @@
         </b-col>
         <b-col cols="12" lg="6">
           <b-form-group id="sub-email" label="Email:" label-for="input-sub-email" label-cols-lg="4" content-cols-lg :invalid-feedback="invalidNameFeedback">
-            <b-form-input id="input-sub-email" v-model="formData.subEmail" type="email" required trim  :disabled="getEmail === 'no'"></b-form-input>
+            <b-form-input id="input-sub-email" v-model="formData.email" type="email" required trim  :disabled="getEmail === 'no'"></b-form-input>
           </b-form-group>
         </b-col>
         <b-col cols="12" lg="6">
           <b-form-group id="sub-phone" label="Telephone:" label-for="input-sub-phone" label-cols-lg="4" content-cols-lg :invalid-feedback="invalidNameFeedback">
-            <b-form-input id="input-sub-phone" v-model="formData.subPhone" type="telephone" required trim  :disabled="getText === 'no'"></b-form-input>
+            <b-form-input id="input-sub-phone" v-model="formData.phone" type="telephone" required trim  :disabled="getText === 'no'"></b-form-input>
           </b-form-group>
         </b-col>
       </b-form-row>
       <b-form-row class="sect" title="Information required">
         <h3 class="w-100">What Information Do You Need?</h3>
-        <b-form-group label="Select from these options:" v-slot="{ ariaDescribedby }">
-          <b-form-checkbox-group id="check-weather" v-model="formData.selectedWeather" :options="weatherOptions" :aria-describedby="ariaDescribedby" name="weather-options"
-          ></b-form-checkbox-group>
-        </b-form-group>
+        <div class="weather-info">
+          <div v-for="(option, index) in weatherOptions" :key="index">
+            <label class="option-container">{{option.text}}
+              <input type="checkbox" v-model="formData.selectedWeather" :value="option.value">
+              <span class="checkmark"></span>
+            </label>
+          </div>
+          <p>Selected options: {{formData.selectedWeather}}</p>
+        </div>
+        <h3 class="w-100">Notification Regularity</h3>
+
       </b-form-row>
       <div style="overflow:auto;">
         <div style="float:right;">
@@ -67,7 +72,6 @@
         </div>
       </div>
       <div style="text-align:center;margin-top:40px;">
-        <span class="step"></span>
         <span class="step"></span>
         <span class="step"></span>
       </div>
@@ -96,7 +100,7 @@ export default {
       getText: 'no',
       getWA: 'no',
       formData: {
-        fname: '', lname: '', email: '', phone: '', subEmail: '', telegram: '', whatsapp: '', subPhone: '', selectedWeather: []
+        fname: '', lname: '', passConfirmed: '', pass: '', email: '', telegram: '', whatsapp: '', phone: '', selectedWeather: []
       }
     }
   },
@@ -105,7 +109,6 @@ export default {
       // gather data and send to server
     },
     reset: function () {
-      // reset form data
       this.$nextTick(() => {
         this.show = false
       })
@@ -135,48 +138,23 @@ export default {
       if (n === 1 && !this.validateForm()) {
         return false
       }
-      // Hide the current tab:
-      x[this.currentPage].style.display = 'none'
-      // Increase or decrease the current tab by 1:
-      this.currentPage = this.currentPage + n
-      // if you have reached the end of the form... :
-      if (this.currentPage >= x.length) {
-        // ...the form gets submitted:
-        this.submit()
+      x[this.currentPage].style.display = 'none' // hide current page
+      this.currentPage = this.currentPage + n // next/previous page
+      if (this.currentPage >= x.length) { // last page
+        this.submit() // submit form
         return false
       }
-      // Otherwise, display the correct tab:
-      this.showPage(this.currentPage)
+      this.showPage(this.currentPage) // display new page
     },
     fixStepIndicator: function (pageNumber) {
-      // This function removes the "active" class of all steps...
       let i; const x = document.getElementsByClassName('step')
       for (i = 0; i < x.length; i++) {
-        x[i].className = x[i].className.replace(' active', '')
+        x[i].className = x[i].className.replace(' active', '') // no active indicator
       }
-      // ... and adds the "active" class to the current step:
-      x[pageNumber].className += ' active'
+      x[pageNumber].className += ' active' // set active indicator
     },
     validateForm: function () {
-      // This function deals with validation of the form fields
-      let i; let valid = true
-      const x = document.getElementsByClassName('sect')
-      const y = x[this.currentPage].getElementsByTagName('input')
-      // A loop that checks every input field in the current tab:
-      for (i = 0; i < y.length; i++) {
-        // If a field is empty...
-        if (y[i].value === '') {
-          // add an "invalid" class to the field:
-          y[i].className += ' invalid'
-          // and set the current valid status to false:
-          valid = false
-        }
-      }
-      // If the valid status is true, mark the step as finished and valid:
-      if (valid) {
-        document.getElementsByClassName('step')[this.currentPage].className += ' finish'
-      }
-      return valid // return the valid status}
+      return true
     }
   },
   mounted: function () {
@@ -206,7 +184,6 @@ export default {
 .sect {
   padding: .25rem;
   margin: .1rem;
-  // border-bottom: 1px ridge rgb(175, 174, 174);
   display: none;
 }
 .form-group, .decider {
@@ -219,6 +196,10 @@ export default {
 }
 .form-control {
   margin-left: 5px;
+}
+.weather-info {
+  display: grid;
+  grid: auto-flow dense 38px / repeat(4, minmax(100px, 1fr));
 }
 .step {
   height: 15px;
@@ -235,5 +216,71 @@ export default {
 }
 .step.finish {
   background-color: #04AA6D;
+}
+.option-container {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.option-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+}
+
+/* On mouse-over, add a grey background color */
+.option-container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.option-container input:checked ~ .checkmark {
+  background-color: #2196F3;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.option-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.option-container .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 </style>

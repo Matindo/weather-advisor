@@ -6,7 +6,9 @@
 const weatherDataOptions = [
   { text: 'All', value: null },
   { text: 'Temperature', value: 'temp' },
-  { text: 'Wind', value: 'wind' }
+  { text: 'Wind', value: 'wind' },
+  { text: 'Humidity', value: 'humidity' },
+  { text: 'Possibility of Rainfall', value: 'pop' }
 ]
 
 export { weatherDataOptions }

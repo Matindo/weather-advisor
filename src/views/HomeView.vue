@@ -43,7 +43,7 @@
           <div class="title">Regular User</div>
           <div class="illustrate"><img src="../assets/images/Push notifications-cuate.png" alt="regular" /></div>
           <div class="info">You'll get daily alerts on weather forecasts you want to help you plan your daily activities.</div>
-          <b-button class="more p-0" size="sm" variant="outline-primary">Subscribe</b-button>
+          <b-button class="more p-0" size="sm" variant="outline-primary" @click="regularSubscribe">Subscribe</b-button>
         </div>
       </div>
       <div class="farmer">
@@ -51,7 +51,7 @@
           <div class="title">Farmer</div>
           <div class="illustrate"><img src="../assets/images/Farmer-rafiki.png" alt="farmer" /></div>
           <div class="info">You'll get weekly and monthly forecasts and predictions to help you plan for your farm activities.</div>
-          <b-button class="more p-0" size="sm" variant="outline-success">Subscribe</b-button>
+          <b-button class="more p-0" size="sm" variant="outline-success" @click="farmerSubscribe">Subscribe</b-button>
         </div>
       </div>
       <div class="organization">
@@ -61,7 +61,7 @@
             <img src="../assets/images/Humanitarian Help-pana.png" alt="ngo" />
           </div>
           <div class="info">You'll get pre-empted weather alerts and warnings to help you prepare for relief activities where needed.</div>
-          <b-button class="more p-0" size="sm" variant="outline-danger">Subscribe</b-button>
+          <b-button class="more p-0" size="sm" variant="outline-danger" @click="orgSubscribe">Subscribe</b-button>
         </div>
       </div>
     </section>
@@ -132,6 +132,15 @@ export default {
     },
     hideSubscribeModal: function () {
       this.$refs['modal-subscribe'].hide()
+    },
+    regularSubscribe: function () {
+      this.showSubscribeModal()
+    },
+    farmerSubscribe: function () {
+      this.showSubscribeModal()
+    },
+    orgSubscribe: function () {
+      this.showSubscribeModal()
     }
   },
   mounted: function () {
