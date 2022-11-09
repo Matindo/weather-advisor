@@ -9,8 +9,10 @@
         <template #button-content>
           <div class="button-cnt"><b-icon font-scale="2" icon="check2-circle"></b-icon>Subscriptions</div>
         </template>
-        <b-dropdown-item @click="login()" v-show="!isSubscribed">Subscribe</b-dropdown-item>
-        <b-dropdown-item @click="$router.push('/profile')" v-show="isSubscribed">My Subscriptions</b-dropdown-item>
+        <b-dropdown-item @click="subscribe" v-show="!isSubscribed">Subscribe</b-dropdown-item>
+        <b-dropdown-item @click="login" v-show="!isLoggedIn && isSubscribed">Sign In</b-dropdown-item>
+        <b-dropdown-item @click="$router.push('/profile')" v-show="isLoggedIn && isSubscribed">My Subscriptions</b-dropdown-item>
+        <b-dropdown-item @click="logout" v-show="isLoggedIn">Sign Out</b-dropdown-item>
       </b-nav-item-dropdown>
     </b-navbar-nav>
   </b-navbar>
@@ -27,6 +29,9 @@ export default {
     }),
     isSubscribed: function () {
       return this.user.subscriptions !== null
+    },
+    isLoggedIn: function () {
+      return this.user.active
     },
     daytime: function () {
       var currentHour = new Date().getHours()
@@ -58,6 +63,9 @@ export default {
     },
     login: function () {
       this.$router.push('/account')
+    },
+    subscribe: function () {
+      this.$root.$emit('headerSubscribe')
     }
   },
   mounted: function () {

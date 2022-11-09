@@ -51,39 +51,30 @@
           </b-form-group>
         </b-col>
       </b-form-row>
-      <b-form-row class="sect" title="Information required">
-        <h3 class="w-100">What Information Do You Need?</h3>
-        <div class="weather-info">
-          <div v-for="(option, index) in weatherOptions" :key="index">
-            <label class="option-container">{{option.text}}
-              <input type="checkbox" v-model="formData.selectedWeather" :value="option.value">
-              <span class="checkmark"></span>
-            </label>
-          </div>
-          <p>Selected options: {{formData.selectedWeather}}</p>
+      <b-form-row class="location" title="Your Location">
+        <b-button pill variant="outline-info" size="sm" block @click="copyLocation">Use default location as your preferred weather location</b-button>
+        <b-button pill variant="outline-info" size="sm" block @click="setLocation">Set current location as your preferred weather location</b-button>
+        <div class="search">
+          ...or type in your preferred city:
+          <b-input type="text" class="search-bar" placeholder="Search" v-model="formData.location" />
         </div>
-        <h3 class="w-100">Notification Regularity</h3>
-
       </b-form-row>
-      <div style="overflow:auto;">
-        <div style="float:right;">
-          <b-button variant="outline-light" id="prevBtn" class="m-1" @click="navigate(-1)">Previous</b-button>
-          <b-button variant="outline-light" id="nextBtn" class="m-1" @click="navigate(1)">Next</b-button>
-        </div>
-      </div>
-      <div style="text-align:center;margin-top:40px;">
-        <span class="step"></span>
-        <span class="step"></span>
+      <div>
+        <b-button type="submit" variant="outline-primary">Submit Details</b-button>
+        <b-button type="reset" variant="outline-warning">Reset Form</b-button>
       </div>
     </b-form>
   </div>
 </template>
 
 <script>
+import { locationMixin } from '@/mixins/locationMixin'
 import * as menuOptions from '@/helpers/menuOptons'
+import axios from 'axios'
 
 export default {
   name: 'RegisterForm',
+  mixins: [locationMixin],
   props: {
     presets: {
       type: Object,
@@ -94,19 +85,44 @@ export default {
     return {
       show: true,
       currentPage: 0,
+      searchQuery: '',
       weatherOptions: menuOptions.weatherDataOptions,
       getEmail: 'no',
       getGram: 'no',
       getText: 'no',
       getWA: 'no',
       formData: {
-        fname: '', lname: '', passConfirmed: '', pass: '', email: '', telegram: '', whatsapp: '', phone: '', selectedWeather: []
+        fname: '', lname: '', passConfirmed: '', pass: '', email: '', telegram: '', whatsapp: '', phone: '', location: ''
       }
     }
   },
   methods: {
     submit: function () {
-      // gather data and send to server
+      const formData = new FormData()
+      formData.append('fname', formData.fname)
+      formData.append('lname', formData.lname)
+      formData.append('pword', formData.passConfirmed)
+      formData.append('email', formData.email)
+      formData.append('phone', formData.phone)
+      formData.append('telegram', formData.telegram)
+      formData.append('whatsapp', formData.whatsapp)
+      formData.append('location', formData.location)
+      axios({
+        method: 'POST',
+        url: `./api/Subscribe.php?action=add${this.presets.userType}`,
+        data: formData,
+        headers: { 'Content-Type': 'multipart/form-data' }
+      }).then(res => {
+        if(res.data.error) {
+          this.$store.dispatch('SET_STATUS', 'danger')
+          this.$store.dispatch('SET_MESSAGE', `Error subscribing: ${res.data.errMessage}`)
+          return;
+        }
+        this.$store.dispatch('SET_STATUS', 'success')
+        this.$store.dispatch('SET_MESSAGE', 'Successfully subscribed!')
+      }).finally(() => {
+        this.$root.$emit('showSnackbar')
+      })
     },
     reset: function () {
       this.$nextTick(() => {
@@ -114,51 +130,21 @@ export default {
       })
       this.show = true
     },
-    showPage: function (pageNumber) {
-      const x = document.getElementsByClassName('sect')
-      x[pageNumber].style.display = 'flex'
-      // updste the Previous/Next buttons
-      if (pageNumber === 0) {
-        document.getElementById('prevBtn').style.display = 'none'
+    copyLocation: function () {
+      if (localStorage.getItem('defaultLocation')) {
+        this.formData.location = localStorage.getItem('defaultLocation')
       } else {
-        document.getElementById('prevBtn').style.display = 'inline'
+        this.$store.dispatch('SET_STATUS', 'dark')
+        this.$store.dispatch('SET_MESSAGE', 'No default city or location set')
+        this.$root.$emit('showSnackbar')
       }
-      if (pageNumber === (x.length - 1)) {
-        document.getElementById('nextBtn').innerHTML = 'Submit'
-      } else {
-        document.getElementById('nextBtn').innerHTML = 'Next'
-      }
-      // Displays the correct step indicator:
-      this.fixStepIndicator(pageNumber)
     },
-    navigate: function (n) {
-      // Figure out which page to display
-      const x = document.getElementsByClassName('sect')
-      // Exit the function if any field in the current tab is invalid:
-      if (n === 1 && !this.validateForm()) {
-        return false
-      }
-      x[this.currentPage].style.display = 'none' // hide current page
-      this.currentPage = this.currentPage + n // next/previous page
-      if (this.currentPage >= x.length) { // last page
-        this.submit() // submit form
-        return false
-      }
-      this.showPage(this.currentPage) // display new page
-    },
-    fixStepIndicator: function (pageNumber) {
-      let i; const x = document.getElementsByClassName('step')
-      for (i = 0; i < x.length; i++) {
-        x[i].className = x[i].className.replace(' active', '') // no active indicator
-      }
-      x[pageNumber].className += ' active' // set active indicator
-    },
-    validateForm: function () {
-      return true
+    setLocation: function () {
+      this.formData.location = JSON.stringify(this.getLocation())
+      this.$store.dispatch('SET_STATUS', 'info')
+      this.$store.dispatch('SET_MESSAGE', 'Current location set!')
+      this.$root.$emit('showSnackbar')
     }
-  },
-  mounted: function () {
-    this.showPage(this.currentPage)
   }
 }
 </script>
@@ -199,7 +185,7 @@ export default {
 }
 .weather-info {
   display: grid;
-  grid: auto-flow dense 38px / repeat(4, minmax(100px, 1fr));
+  grid: auto-flow dense 38px / repeat(4, minmax(80px, 1fr));
 }
 .step {
   height: 15px;

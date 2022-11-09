@@ -16,7 +16,7 @@
       <div class="weather-bar">
         <div class="current-weather">
           <weather-widget :weatherDetails="weatherData" />
-          <p style="font-size: 1.2rem;">Do you want to set this location as your default location for weather data and forecasts whenever you load this site?</p>
+          <p style="font-size: 1.2rem;">Set this as your default weather location?</p>
           <b-button pill variant="outline-info" @click="setDefaultWeatherLocation">Yes, Set Default Location</b-button>
         </div>
         <div class="forecast">
@@ -65,7 +65,7 @@
         </div>
       </div>
     </section>
-    <b-modal ref="modal-subscribe" size="xl" hide-footer body-bg-variant="dark" body-text-variant="light" header-bg-variant="dark" header-text-variant="light" header-close-content="&times;" header-close-variant="dark" button-size="sm">
+    <b-modal ref="modal-subscribe" size="xl" hide-footer body-bg-variant="dark" body-text-variant="light" header-bg-variant="dark" header-text-variant="light">
       <template #modal-title>
         <h1>Subscribe to Weather Alerts</h1>
       </template>
@@ -88,14 +88,16 @@ export default {
   mixins: [locationMixin, weatherMixin],
   data: function () {
     return {
-      formOptions: { ngo: false, farmer: false },
+      formOptions: { userType: '' },
       searchQuery: ''
     }
   },
   computed: {
     ...mapGetters({
       city: 'CITY',
-      location: 'LOCATION'
+      location: 'LOCATION',
+      message: 'MESSAGE',
+      status: 'STATUS'
     })
   },
   methods: {
@@ -134,6 +136,7 @@ export default {
       this.$refs['modal-subscribe'].hide()
     },
     regularSubscribe: function () {
+      this.formOptions.userType = 'Regular'
       this.showSubscribeModal()
     },
     farmerSubscribe: function () {
@@ -141,6 +144,9 @@ export default {
     },
     orgSubscribe: function () {
       this.showSubscribeModal()
+    },
+    showSnackbar: function () {
+      document.getElementById('snackbar').className = "show";
     }
   },
   mounted: function () {
@@ -158,6 +164,12 @@ export default {
     }
     this.$root.$on('footerSubscribe', () => {
       this.showSubscribeModal()
+    })
+    this.$root.$on('headerSubscribe', () => {
+      this.showSubscribeModal()
+    })
+    this.$root.$on('showSnackbar', () => {
+      this.showSnackbar()
     })
   }
 }

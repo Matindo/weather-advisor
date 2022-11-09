@@ -10,9 +10,12 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user: {},
+    user: { email: '', subscriptions: {}, active: false },
     city: '',
-    location: []
+    location: [],
+    userType: '',
+    snackbarMessage: '',
+    snackbarStatus: ''
   },
   getters: {
     USER: function (state) {
@@ -23,6 +26,15 @@ export default new Vuex.Store({
     },
     LOCATION: function (state) {
       return state.location
+    },
+    USER_TYPE: function (state) {
+      return state.userType
+    },
+    MESSAGE: function (state) {
+      return state.snackbarMessage
+    },
+    STATUS: function (state) {
+      return state.snackbarStatus
     }
   },
   mutations: {
@@ -66,6 +78,15 @@ export default new Vuex.Store({
     SET_LOCATION: function (state, location) {
       state.city = ''
       state.location = location
+    },
+    SET_USER_TYPE: function (state, type) {
+      state.userType = type
+    },
+    SET_MESSAGE: function (state, message) {
+      state.snackbarMessage = message
+    },
+    SET_STATUS: function (state, status) {
+      state.snackbarStatus = status
     }
   },
   actions: {
@@ -86,6 +107,15 @@ export default new Vuex.Store({
     },
     SET_LOCATION: function (context, location) {
       context.commit('SET_LOCATION', location)
+    },
+    SET_USER_TYPE: function (context, payload) {
+      context.commit('SET_USER_TYPE', payload)
+    },
+    SET_MESSAGE: function (context, payload) {
+      context.commit('SET_MESSAGE', payload)
+    },
+    SET_STATUS: function (context, status) {
+      context.commit('SET_STATUS', status)
     }
   },
   modules: {
