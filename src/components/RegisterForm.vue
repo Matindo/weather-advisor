@@ -53,10 +53,10 @@
       </b-form-row>
       <b-form-row class="location" title="Your Location">
         <h3 class="w-100">Your Weather location</h3>
-        <b-button class="mt-3" pill variant="outline-light" block @click="copyLocation">
+        <b-button class="mt-3" pill variant="outline-light" block @click="copyLocation()" v-show="city !== '' || location.length != 0">
           Use default location as your preferred weather location
         </b-button>
-        <b-button class="mt-3" pill variant="outline-warning" block @click="setLocation">
+        <b-button class="mt-3" pill variant="outline-warning" block @click="setLocation()">
           Set current location as your preferred weather location
         </b-button>
         <div class="search my-3">
@@ -75,6 +75,7 @@
 <script>
 import { locationMixin } from '@/mixins/locationMixin'
 import * as menuOptions from '@/helpers/menuOptons'
+import { mapGetters } from 'vuex'
 import axios from 'axios'
 
 export default {
@@ -85,6 +86,12 @@ export default {
       type: Object,
       required: true
     }
+  },
+  computed: {
+    ...mapGetters({
+      city: 'CITY',
+      location: 'LOCATION'
+    })
   },
   data: function () {
     return {
@@ -104,14 +111,14 @@ export default {
   methods: {
     submit: function () {
       const formData = new FormData()
-      formData.append('fname', formData.fname)
-      formData.append('lname', formData.lname)
-      formData.append('pword', formData.passConfirmed)
-      formData.append('email', formData.email)
-      formData.append('phone', formData.phone)
-      formData.append('telegram', formData.telegram)
-      formData.append('whatsapp', formData.whatsapp)
-      formData.append('location', formData.location)
+      formData.append('fname', this.formData.fname)
+      formData.append('lname', this.formData.lname)
+      formData.append('pword', this.formData.passConfirmed)
+      formData.append('email', this.formData.email)
+      formData.append('phone', this.formData.phone)
+      formData.append('telegram', this.formData.telegram)
+      formData.append('whatsapp', this.formData.whatsapp)
+      formData.append('location', this.formData.location)
       axios({
         method: 'POST',
         url: `./api/Subscribe.php?action=add${this.presets.userType}`,
@@ -138,6 +145,8 @@ export default {
     copyLocation: function () {
       if (localStorage.getItem('defaultLocation')) {
         this.formData.location = localStorage.getItem('defaultLocation')
+      } else if (localStorage.getItem('defaultCity')) {
+        this.formData.location = localStorage.getItem('defaultCity')
       } else {
         this.$store.dispatch('SET_STATUS', 'dark')
         this.$store.dispatch('SET_MESSAGE', 'No default city or location set')
@@ -145,7 +154,10 @@ export default {
       }
     },
     setLocation: function () {
-      this.formData.location = JSON.stringify(this.getLocation())
+      this.getLocation()
+      setInterval(() => {
+        this.formData.location = JSON.stringify({ lon: this.longitude, lat: this.lattitude })
+      }, 1000)
       this.$store.dispatch('SET_STATUS', 'info')
       this.$store.dispatch('SET_MESSAGE', 'Current location set!')
       this.$root.$emit('showSnackbar')
