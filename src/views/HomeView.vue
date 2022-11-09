@@ -146,7 +146,7 @@ export default {
       this.showSubscribeModal()
     },
     showSnackbar: function () {
-      document.getElementById('snackbar').className = "show";
+      document.getElementById('snackbar').className = 'show'
     }
   },
   mounted: function () {

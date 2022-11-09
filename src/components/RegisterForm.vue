@@ -52,16 +52,21 @@
         </b-col>
       </b-form-row>
       <b-form-row class="location" title="Your Location">
-        <b-button pill variant="outline-info" size="sm" block @click="copyLocation">Use default location as your preferred weather location</b-button>
-        <b-button pill variant="outline-info" size="sm" block @click="setLocation">Set current location as your preferred weather location</b-button>
-        <div class="search">
+        <h3 class="w-100">Your Weather location</h3>
+        <b-button class="mt-3" pill variant="outline-light" block @click="copyLocation">
+          Use default location as your preferred weather location
+        </b-button>
+        <b-button class="mt-3" pill variant="outline-warning" block @click="setLocation">
+          Set current location as your preferred weather location
+        </b-button>
+        <div class="search my-3">
           ...or type in your preferred city:
-          <b-input type="text" class="search-bar" placeholder="Search" v-model="formData.location" />
+          <b-input type="text" placeholder="e.g. Thika" v-model="formData.location" />
         </div>
       </b-form-row>
-      <div>
-        <b-button type="submit" variant="outline-primary">Submit Details</b-button>
-        <b-button type="reset" variant="outline-warning">Reset Form</b-button>
+      <div class="form-footer">
+        <b-button type="submit" size="lg" variant="primary">Submit Details</b-button>
+        <b-button type="reset" size="lg" variant="warning">Reset Form</b-button>
       </div>
     </b-form>
   </div>
@@ -113,22 +118,22 @@ export default {
         data: formData,
         headers: { 'Content-Type': 'multipart/form-data' }
       }).then(res => {
-        if(res.data.error) {
+        if (res.data.error) {
           this.$store.dispatch('SET_STATUS', 'danger')
-          this.$store.dispatch('SET_MESSAGE', `Error subscribing: ${res.data.errMessage}`)
-          return;
+          this.$store.dispatch('SET_MESSAGE', res.data.message)
+          return
         }
         this.$store.dispatch('SET_STATUS', 'success')
-        this.$store.dispatch('SET_MESSAGE', 'Successfully subscribed!')
+        this.$store.dispatch('SET_MESSAGE', res.data.message)
       }).finally(() => {
         this.$root.$emit('showSnackbar')
       })
     },
     reset: function () {
+      this.show = false
       this.$nextTick(() => {
-        this.show = false
+        this.show = true
       })
-      this.show = true
     },
     copyLocation: function () {
       if (localStorage.getItem('defaultLocation')) {
@@ -166,11 +171,12 @@ export default {
   align-items: center;
   width: 100%;
   flex-wrap: wrap;
-}
-.sect {
   padding: .25rem;
   margin: .1rem;
-  display: none;
+  &.location {
+    flex-direction: column;
+    justify-content: center;
+  }
 }
 .form-group, .decider {
   display: flex;
@@ -183,90 +189,12 @@ export default {
 .form-control {
   margin-left: 5px;
 }
-.weather-info {
-  display: grid;
-  grid: auto-flow dense 38px / repeat(4, minmax(80px, 1fr));
-}
-.step {
-  height: 15px;
-  width: 15px;
-  margin: 0 2px;
-  background-color: #bbbbbb;
-  border: none;
-  border-radius: 50%;
-  display: inline-block;
-  opacity: 0.5;
-}
-.step.active {
-  opacity: 1;
-}
-.step.finish {
-  background-color: #04AA6D;
-}
-.option-container {
-  display: block;
-  position: relative;
-  padding-left: 35px;
-  margin-bottom: 12px;
-  cursor: pointer;
-  font-size: 22px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-/* Hide the browser's default checkbox */
-.option-container input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
-}
-
-/* Create a custom checkbox */
-.checkmark {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 25px;
-  width: 25px;
-  background-color: #eee;
-}
-
-/* On mouse-over, add a grey background color */
-.option-container:hover input ~ .checkmark {
-  background-color: #ccc;
-}
-
-/* When the checkbox is checked, add a blue background */
-.option-container input:checked ~ .checkmark {
-  background-color: #2196F3;
-}
-
-/* Create the checkmark/indicator (hidden when not checked) */
-.checkmark:after {
-  content: "";
-  position: absolute;
-  display: none;
-}
-
-/* Show the checkmark when checked */
-.option-container input:checked ~ .checkmark:after {
-  display: block;
-}
-
-/* Style the checkmark/indicator */
-.option-container .checkmark:after {
-  left: 9px;
-  top: 5px;
-  width: 5px;
-  height: 10px;
-  border: solid white;
-  border-width: 0 3px 3px 0;
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  transform: rotate(45deg);
+.form-footer {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  align-items: center;
+  padding: 1rem 3rem;
+  border-top: 3px groove #f3f9fa;
 }
 </style>
