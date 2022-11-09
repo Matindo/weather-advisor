@@ -293,7 +293,6 @@ section {
   column-gap: 1.5rem;
   align-items: center;
   justify-content: space-around;
-  margin-bottom: 10px;
   width: 100%;
   color: var(--black);
   background-color: var(--brilliant-white);

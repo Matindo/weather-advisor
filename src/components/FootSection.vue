@@ -15,7 +15,7 @@
       <b-button class="weather-getter my-0" variant="outline-light" pill @click="locationWeather()">Get Current Location's Weather</b-button>
       <div class="subscribe">
         <h3>Get Notified</h3>
-        <b-button variant="outline-warning" class="w-50 my-2" block @click="subscribe()">Subscribe & Get Alerts</b-button>
+        <b-button variant="outline-warning" class="w-75 my-2 mx-auto" block @click="subscribe()">Subscribe & Get Alerts</b-button>
       </div>
       <div class="socials">
         <ul class="social-links">
