@@ -59,7 +59,7 @@ export default {
 #foot-section {
   background-color: var(--navigator-bg);
   display: grid;
-  grid-template-columns: min-max(300px, 1fr) min-max(300px, 2fr) ;
+  grid-template-columns: 1fr 2fr;
   grid-template-rows: auto min-content;
   grid-auto-flow: row;
   column-gap: 2rem;

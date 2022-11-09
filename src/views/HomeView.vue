@@ -71,6 +71,7 @@
       </template>
       <register-form :presets="formOptions" />
     </b-modal>
+    <snack-bar />
   </div>
 </template>
 
@@ -81,10 +82,11 @@ import { locationMixin } from '@/mixins/locationMixin'
 import { weatherMixin } from '@/mixins/weatherMixin'
 import ForecastWidget from '@/components/ForecastWidget.vue'
 import { mapGetters } from 'vuex'
+import SnackBar from '@/components/SnackBar.vue'
 
 export default {
   name: 'HomeView',
-  components: { RegisterForm, WeatherWidget, ForecastWidget },
+  components: { RegisterForm, WeatherWidget, ForecastWidget, SnackBar },
   mixins: [locationMixin, weatherMixin],
   data: function () {
     return {

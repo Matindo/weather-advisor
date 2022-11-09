@@ -69,7 +69,7 @@ export default {
     }
   },
   mounted: function () {
-    document.getElementsById('navbar').style.backgroundImage = `linear-gradient(to bottom, rgba(34, 34, 34, .05), rgba(5, 5, 5, .15)),url('https://source.unsplash.com/1600x900/?${this.daytime}')`
+    document.getElementById('navbar').style.backgroundImage = `linear-gradient(to bottom, rgba(34, 34, 34, .05), rgba(5, 5, 5, .15)),url('https://source.unsplash.com/1600x900/?${this.daytime}')`
   }
 }
 </script>

@@ -144,9 +144,9 @@ export default {
     },
     copyLocation: function () {
       if (localStorage.getItem('defaultLocation')) {
-        this.formData.location = localStorage.getItem('defaultLocation')
+        this.formData.location = JSON.stringify({ lon: this.location[0], lat: this.location[1] })
       } else if (localStorage.getItem('defaultCity')) {
-        this.formData.location = localStorage.getItem('defaultCity')
+        this.formData.location = this.city
       } else {
         this.$store.dispatch('SET_STATUS', 'dark')
         this.$store.dispatch('SET_MESSAGE', 'No default city or location set')
