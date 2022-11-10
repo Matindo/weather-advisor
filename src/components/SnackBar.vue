@@ -20,7 +20,7 @@ export default {
     if ((this.variant === 'warning') || (this.variant === 'light')) { snackbar.style.color = '#343a40' }
     if (this.variant === 'success') {
       snackbar.style.backgroundColor = '#28a745'
-    }  else if (this.variant === 'dark') {
+    } else if (this.variant === 'dark') {
       snackbar.style.backgroundColor = '#343a40'
     } else if (this.variant === 'info') {
       snackbar.style.backgroundColor = '#17a2b8'
@@ -37,7 +37,7 @@ export default {
     }
   },
   mounted: function () {
-    setTimeout(function(){ document.getElementById('snackbar').className = document.getElementById('snackbar').className.replace("show", ""); }, 5000);
+    setTimeout(function () { document.getElementById('snackbar').className = document.getElementById('snackbar').className.replace('show', '') }, 5000)
   }
 }
 </script>
