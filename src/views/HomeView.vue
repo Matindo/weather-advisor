@@ -423,5 +423,8 @@ input.search-bar {
   }
 }
 @media all and (max-width: 540px) {
+  .subscription, .current-weather, .weather, .weather-bar, .type, #home {
+    grid-auto-flow: row dense;
+  }
 }
 </style>
