@@ -2,7 +2,6 @@
   <div id="register-form">
     <b-form @submit.prevent="submit()" @reset="reset()" v-show="show">
       <b-form-row class="sect" title="Personal Info">
-        <h3 class="w-100">Your Personal Details</h3>
         <b-col cols="12" lg="6">
           <b-form-group id="first-name" label="First Name:" label-for="input-first-name" label-cols-lg="4" content-cols-lg :invalid-feedback="invalidNameFeedback">
             <b-form-input id="input-first-name" v-model="formData.fname" placeholder="e.g Alex" required trim></b-form-input>
@@ -23,23 +22,6 @@
             <b-form-input id="input-conpass" v-model="formData.passConfirmed" type="password" required></b-form-input>
           </b-form-group>
         </b-col>
-        <h3 class="w-100">Contact Details</h3>
-        <div class="w-100 decider py-2">
-          <b-form-checkbox id="check-email" v-model="getEmail" value="yes" unchecked-value="no"> E-mail</b-form-checkbox>
-          <b-form-checkbox id="check-gram" v-model="getGram" value="yes" unchecked-value="no"> Telegram</b-form-checkbox>
-          <b-form-checkbox id="check-WA" v-model="getWA" value="yes" unchecked-value="no"> WhatsApp</b-form-checkbox>
-          <b-form-checkbox id="check-text" v-model="getText" value="yes" unchecked-value="no"> SMS</b-form-checkbox>
-        </div>
-        <b-col cols="12" lg="6">
-          <b-form-group id="telegram" label="Telegram No:" label-for="input-telegram" label-cols-lg="4" content-cols-lg :invalid-feedback="invalidNameFeedback">
-            <b-form-input id="input-telegram" v-model="formData.telegram" type="telephone" required trim :disabled="getGram === 'no'"></b-form-input>
-          </b-form-group>
-        </b-col>
-        <b-col cols="12" lg="6">
-          <b-form-group id="whatsapp" label="WhatsApp No:" label-for="input-whatsapp" label-cols-lg="4" content-cols-lg :invalid-feedback="invalidNameFeedback">
-            <b-form-input id="input-whatsapp" v-model="formData.whatsapp" type="telephone" required trim :disabled="getWA === 'no'"></b-form-input>
-          </b-form-group>
-        </b-col>
         <b-col cols="12" lg="6">
           <b-form-group id="sub-email" label="Email:" label-for="input-sub-email" label-cols-lg="4" content-cols-lg :invalid-feedback="invalidNameFeedback">
             <b-form-input id="input-sub-email" v-model="formData.email" type="email" required trim  :disabled="getEmail === 'no'"></b-form-input>
@@ -50,6 +32,9 @@
             <b-form-input id="input-sub-phone" v-model="formData.phone" type="telephone" required trim  :disabled="getText === 'no'"></b-form-input>
           </b-form-group>
         </b-col>
+        <div class="w-100 decider py-2">
+          <b-form-checkbox id="check-gram" v-model="formData.getGram" value="yes" unchecked-value="no"> Get Telegram Notifications</b-form-checkbox>
+        </div>
       </b-form-row>
       <b-form-row class="location" title="Your Location">
         <h3 class="w-100">Your Weather location</h3>
@@ -99,12 +84,8 @@ export default {
       currentPage: 0,
       searchQuery: '',
       weatherOptions: menuOptions.weatherDataOptions,
-      getEmail: 'no',
-      getGram: 'no',
-      getText: 'no',
-      getWA: 'no',
       formData: {
-        fname: '', lname: '', passConfirmed: '', pass: '', email: '', telegram: '', whatsapp: '', phone: '', location: ''
+        fname: '', lname: '', passConfirmed: '', pass: '', email: '', getGram: 'no', phone: '', location: ''
       }
     }
   },
@@ -116,8 +97,7 @@ export default {
       formData.append('pword', this.formData.passConfirmed)
       formData.append('email', this.formData.email)
       formData.append('phone', this.formData.phone)
-      formData.append('telegram', this.formData.telegram)
-      formData.append('whatsapp', this.formData.whatsapp)
+      formData.append('getTelegram', this.formData.getGram)
       formData.append('location', this.formData.location)
       axios({
         method: 'POST',
