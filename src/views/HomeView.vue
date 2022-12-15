@@ -71,6 +71,24 @@
       </template>
       <register-form :presets="formOptions" />
     </b-modal>
+    <b-modal ref="modal-login" hide-footer title="Login">
+      <b-form @submit.prevent="signIn" @reset="resetLogin" v-show="show">
+        <b-form-row class="w-100">
+          <b-form-group id="email" label="Email:" label-for="input-email">
+            <b-form-input id="input-email" v-model="formData.email" type="email" required trim></b-form-input>
+          </b-form-group>
+        </b-form-row>
+        <b-form-row class="w-100">
+          <b-form-group id="pword" label="Password:" label-for="input-pword">
+            <b-form-input id="input-pword" v-model="formData.pass" type="password" required></b-form-input>
+          </b-form-group>
+        </b-form-row>
+        <div class="form-footer w-100">
+          <b-button type="submit" variant="primary">Sign In</b-button>
+          <b-button type="reset" variant="warning">Reset</b-button>
+        </div>
+      </b-form>
+    </b-modal>
     <snack-bar />
   </div>
 </template>
@@ -83,6 +101,7 @@ import { weatherMixin } from '@/mixins/weatherMixin'
 import ForecastWidget from '@/components/ForecastWidget.vue'
 import { mapGetters } from 'vuex'
 import SnackBar from '@/components/SnackBar.vue'
+import axios from 'axios'
 
 export default {
   name: 'HomeView',
@@ -91,7 +110,11 @@ export default {
   data: function () {
     return {
       formOptions: { userType: '' },
-      searchQuery: ''
+      searchQuery: '',
+      formData: {
+        email: '', pass: ''
+      },
+      show: true
     }
   },
   computed: {
@@ -149,6 +172,37 @@ export default {
     },
     showSnackbar: function () {
       document.getElementById('snackbar').className = 'show'
+    },
+    showLoginModal: function () {
+      this.$refs['modal-login'].show()
+    },
+    signIn: function () {
+      const formData = new FormData()
+      formData.append('email', this.formData.email)
+      formData.append('pword', this.formData.pass)
+      axios({
+        method: 'POST',
+        url: './api/Subscribe.php?action=login',
+        data: formData,
+        headers: { 'Content-Type': 'multipart/form-data' }
+      }).then(res => {
+        if (res.data.error) {
+          this.$store.dispatch('SET_STATUS', 'danger')
+          this.$store.dispatch('SET_MESSAGE', res.data.message)
+          return
+        }
+        this.$store.dispatch('SET_STATUS', 'success')
+        this.$store.dispatch('SET_MESSAGE', res.data.message)
+      }).finally(() => {
+        this.$root.$emit('showSnackbar')
+        this.$router.push('/profile')
+      })
+    },
+    reset: function () {
+      this.show = false
+      this.$nextTick(() => {
+        this.show = true
+      })
     }
   },
   mounted: function () {
@@ -172,6 +226,9 @@ export default {
     })
     this.$root.$on('showSnackbar', () => {
       this.showSnackbar()
+    })
+    this.$root.$on('headerLogin', () => {
+      this.showLoginModal()
     })
   }
 }
