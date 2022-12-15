@@ -23,21 +23,9 @@
             <b-form-input id="input-conpass" v-model="formData.passConfirmed" type="password" required></b-form-input>
           </b-form-group>
         </b-col>
-        <h3 class="w-100">Contact Details</h3>
-        <div class="w-100 decider py-2">
-          <b-form-checkbox id="check-email" v-model="getEmail" value="yes" unchecked-value="no"> E-mail</b-form-checkbox>
-          <b-form-checkbox id="check-gram" v-model="getGram" value="yes" unchecked-value="no"> Telegram</b-form-checkbox>
-          <b-form-checkbox id="check-WA" v-model="getWA" value="yes" unchecked-value="no"> WhatsApp</b-form-checkbox>
-          <b-form-checkbox id="check-text" v-model="getText" value="yes" unchecked-value="no"> SMS</b-form-checkbox>
-        </div>
         <b-col cols="12" lg="6">
-          <b-form-group id="telegram" label="Telegram No:" label-for="input-telegram" label-cols-lg="4" content-cols-lg :invalid-feedback="invalidNameFeedback">
-            <b-form-input id="input-telegram" v-model="formData.telegram" type="telephone" required trim :disabled="getGram === 'no'"></b-form-input>
-          </b-form-group>
-        </b-col>
-        <b-col cols="12" lg="6">
-          <b-form-group id="whatsapp" label="WhatsApp No:" label-for="input-whatsapp" label-cols-lg="4" content-cols-lg :invalid-feedback="invalidNameFeedback">
-            <b-form-input id="input-whatsapp" v-model="formData.whatsapp" type="telephone" required trim :disabled="getWA === 'no'"></b-form-input>
+          <b-form-group id="sub-phone" label="Telephone:" label-for="input-sub-phone" label-cols-lg="4" content-cols-lg :invalid-feedback="invalidNameFeedback">
+            <b-form-input id="input-sub-phone" v-model="formData.phone" type="telephone" required trim  :disabled="getText === 'no'"></b-form-input>
           </b-form-group>
         </b-col>
         <b-col cols="12" lg="6">
@@ -45,18 +33,23 @@
             <b-form-input id="input-sub-email" v-model="formData.email" type="email" required trim  :disabled="getEmail === 'no'"></b-form-input>
           </b-form-group>
         </b-col>
-        <b-col cols="12" lg="6">
-          <b-form-group id="sub-phone" label="Telephone:" label-for="input-sub-phone" label-cols-lg="4" content-cols-lg :invalid-feedback="invalidNameFeedback">
-            <b-form-input id="input-sub-phone" v-model="formData.phone" type="telephone" required trim  :disabled="getText === 'no'"></b-form-input>
+        <b-col cols="12">
+          <b-form-group label="Is your phone number the same as your Telegram number? ">
+            <b-form-radio-group id="rg-telegram" v-model="sameTelegram" :options="teleOptions" name="rg-telegram"></b-form-radio-group>
+          </b-form-group>
+        </b-col>
+        <b-col cols="12" v-show="!sameTelegram">
+          <b-form-group id="telegram" label="Telegram No:" label-for="input-telegram" label-cols-lg="4" content-cols-lg :invalid-feedback="invalidNameFeedback">
+            <b-form-input id="input-telegram" v-model="formData.telegram" type="telephone" required trim :disabled="getGram === 'no'"></b-form-input>
           </b-form-group>
         </b-col>
       </b-form-row>
       <b-form-row class="location" title="Your Location">
         <h3 class="w-100">Your Weather location</h3>
-        <b-button class="mt-3" pill variant="outline-light" block @click="copyLocation()" v-show="city !== '' || location.length != 0">
+        <!--b-button class="mt-3" pill variant="outline-light" block @click="copyLocation()" v-show="city !== '' || location.length != 0">
           Use default location as your preferred weather location
-        </b-button>
-        <b-button class="mt-3" pill variant="outline-warning" block @click="setLocation()">
+        </b-button-->
+        <b-button class="mt-2 mb-1" pill variant="outline-warning" block @click="setLocation()">
           Set current location as your preferred weather location
         </b-button>
         <div class="search my-3">
@@ -96,6 +89,7 @@ export default {
   data: function () {
     return {
       show: true,
+      sameTelegram: true,
       currentPage: 0,
       searchQuery: '',
       weatherOptions: menuOptions.weatherDataOptions,
@@ -105,7 +99,11 @@ export default {
       getWA: 'no',
       formData: {
         fname: '', lname: '', passConfirmed: '', pass: '', email: '', telegram: '', whatsapp: '', phone: '', location: ''
-      }
+      },
+      teleOptions: [
+        { text: 'Yes, it\'s the same', value: true },
+        { text: 'No, it\'s different.', value: false }
+      ]
     }
   },
   methods: {
@@ -117,7 +115,6 @@ export default {
       formData.append('email', this.formData.email)
       formData.append('phone', this.formData.phone)
       formData.append('telegram', this.formData.telegram)
-      formData.append('whatsapp', this.formData.whatsapp)
       formData.append('location', this.formData.location)
       axios({
         method: 'POST',
@@ -172,7 +169,7 @@ export default {
   background: #222;
   color: var(--white);
   padding: .5rem;
-  background-image: linear-gradient(to bottom, rgba(34, 34, 34, .15), rgba(5, 5, 5, .88), rgba(5, 5, 5, 1)),url('../assets/images/brian-tromp-VTYDkU-n3_s-unsplash.jpg');
+  background-image: linear-gradient(to bottom, rgba(34, 34, 34, 0.537), rgba(5, 5, 5, .58), rgba(5, 5, 5, 1)),url('../assets/images/brian-tromp-VTYDkU-n3_s-unsplash.jpg');
   background-position: center;
   background-size: cover;
 }
