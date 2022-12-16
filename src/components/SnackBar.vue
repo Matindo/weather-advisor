@@ -17,7 +17,9 @@ export default {
   },
   created: function () {
     const snackbar = document.getElementById('snackbar')
-    if ((this.variant === 'warning') || (this.variant === 'light')) { snackbar.style.color = '#343a40' }
+    if ((this.variant === 'warning') || (this.variant === 'light')) {
+      snackbar.style.color = '#343a40'
+    }
     if (this.variant === 'success') {
       snackbar.style.backgroundColor = '#28a745'
     } else if (this.variant === 'dark') {
@@ -33,7 +35,7 @@ export default {
     } else if (this.variant === 'secondary') {
       snackbar.style.backgroundColor = '#6c757d'
     } else if (this.variant === 'light') {
-      snackbar.style.backgroundColor = 'f8f9fa'
+      snackbar.style.backgroundColor = '#f8f9fa'
     }
   },
   mounted: function () {

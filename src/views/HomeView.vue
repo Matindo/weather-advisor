@@ -71,7 +71,7 @@
       </template>
       <register-form :presets="formOptions" />
     </b-modal>
-    <b-modal ref="modal-login" hide-footer title="Login">
+    <b-modal ref="modal-login" hide-footer title="Login" hide-header-close>
       <b-form @submit.prevent="signIn" @reset="resetLogin" v-show="show">
         <b-form-row class="w-100">
           <b-form-group id="email" label="Email:" label-for="input-email">
@@ -84,12 +84,13 @@
           </b-form-group>
         </b-form-row>
         <div class="form-footer w-100">
-          <b-button type="submit" variant="primary">Sign In</b-button>
-          <b-button type="reset" variant="warning">Reset</b-button>
+          <b-button class="mx-2" type="submit" variant="primary">Sign In</b-button>
+          <b-button class="mx-2" type="reset" variant="warning">Reset</b-button>
+          <b-button class="mx-2" type="close" variant="danger" @click="closeLogin">Cancel</b-button>
         </div>
       </b-form>
     </b-modal>
-    <snack-bar />
+    <snack-bar :message="barMessage" :variant="status"/>
   </div>
 </template>
 
@@ -121,7 +122,7 @@ export default {
     ...mapGetters({
       city: 'CITY',
       location: 'LOCATION',
-      message: 'MESSAGE',
+      barMessage: 'MESSAGE',
       status: 'STATUS'
     })
   },
@@ -176,6 +177,9 @@ export default {
     showLoginModal: function () {
       this.$refs['modal-login'].show()
     },
+    closeLogin: function () {
+      this.$refs['modal-login'].hide()
+    },
     signIn: function () {
       const formData = new FormData()
       formData.append('email', this.formData.email)
@@ -198,7 +202,7 @@ export default {
         this.$router.push('/profile')
       })
     },
-    reset: function () {
+    resetLogin: function () {
       this.show = false
       this.$nextTick(() => {
         this.show = true
