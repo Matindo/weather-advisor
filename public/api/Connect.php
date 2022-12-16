@@ -3,8 +3,8 @@
 
 $host = "localhost";
 $dbs = "bysonicg_misimu";
-$user = "bysonicg";
-$pwd = "MarvelDc123";
+$user = "root";
+$pwd = "qRuF4e5MLqxyQc";
 
 $conn = mysqli_connect($host, $user, $pwd, $dbs);
 if (!$conn) {

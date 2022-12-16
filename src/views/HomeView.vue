@@ -110,7 +110,7 @@ export default {
   mixins: [locationMixin, weatherMixin],
   data: function () {
     return {
-      formOptions: { userType: '' },
+      formOptions: { userType: 'Regular' },
       searchQuery: '',
       formData: {
         email: '', pass: ''
@@ -166,9 +166,11 @@ export default {
       this.showSubscribeModal()
     },
     farmerSubscribe: function () {
+      this.formOptions.userType = 'Farmer'
       this.showSubscribeModal()
     },
     orgSubscribe: function () {
+      this.formOptions.userType = 'Organization'
       this.showSubscribeModal()
     },
     showSnackbar: function () {

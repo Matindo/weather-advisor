@@ -71,11 +71,24 @@ if (isset($_GET['action'])) {
     if ($action == 'login') {
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $pass = crypt(mysqli_real_escape_string($conn, $_POST['pword']), '$6$rounds=427$CraZyMommAkateNinYasI$');
-    $sql = $conn->query("SELECT * FROM regular WHERE email='$email'");
+    $table = 'regular';
+    $sql = $conn->query("SELECT * FROM $table WHERE email='$email'");
+    if($sql->num_rows == 0){
+        $table = 'farmer';
+        $sql = $conn->query("SELECT * FROM $table WHERE email='$email'");
+    }
+    if($sql->num_rows == 0){
+        $table = 'organization';
+        $sql = $conn->query("SELECT * FROM $table WHERE email='$email'");
+    }
     if($sql->num_rows > 0){
         while($row = $sql->fetch_assoc()){
             if($row['password'] == $pass){
-                $result['user'] = array('id'=>$row['id'], 'firstName'=>$row['firstName'], 'lastName'=>$row['lastName'], 'email'=>$row['email'], 'about'=>$row['about'], 'occupation'=>$row['occupation'], 'thumbnail'=>$row['profilePicture']);
+                if (($table == 'regular') || ($table == 'farmer')) {
+                    $result['user'] = array('id'=>$row['id'], 'firstName'=>$row['fname'], 'lastName'=>$row['lname'], 'email'=>$row['email'], 'phone'=>$row['phone'], 'location'=>$row['location']);
+                } else {
+                    $result['user'] = array('id'=>$row['id'], 'orgName'=>$row['oname'], 'email'=>$row['email'], 'phone'=>$row['phone'], 'location'=>$row['location']);
+                }
                 $result['message'] = "Successful login. Welcome back, ".$row['firstName'];
             } else {
                 $result['error'] = true;

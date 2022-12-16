@@ -13,28 +13,23 @@
           </b-form-group>
         </b-col>
         <b-col cols="12" lg="6">
-          <b-form-group id="pword" label="Password:" label-for="input-pword" label-cols-lg="4" content-cols-lg  :invalid-feedback="invalidNameFeedback">
+          <b-form-group id="pword" label="Password:" label-for="input-pword">
             <b-form-input id="input-pword" v-model="formData.pass" type="password" required></b-form-input>
           </b-form-group>
         </b-col>
         <b-col cols="12" lg="6">
-          <b-form-group id="confirm-pword" label="Confirm Password:" label-for="input-conpass" label-cols-lg="4" content-cols-lg :invalid-feedback="invalidNameFeedback">
+          <b-form-group id="confirm-pword" label="Confirm Password:" label-for="input-conpass">
             <b-form-input id="input-conpass" v-model="formData.passConfirmed" type="password" required></b-form-input>
           </b-form-group>
         </b-col>
         <b-col cols="12" lg="6">
-          <b-form-group id="sub-email" label="Email:" label-for="input-sub-email" label-cols-lg="4" content-cols-lg :invalid-feedback="invalidNameFeedback">
-            <b-form-input id="input-sub-email" v-model="formData.email" type="email" required trim  :disabled="getEmail === 'no'"></b-form-input>
+          <b-form-group id="email" label="Email:" label-for="email">
+            <b-form-input id="email" v-model="formData.email" type="email" required trim></b-form-input>
           </b-form-group>
         </b-col>
-        <b-col cols="12">
-          <b-form-group label="Is your phone number the same as your Telegram number? ">
-            <b-form-radio-group id="rg-telegram" v-model="sameTelegram" :options="teleOptions" name="rg-telegram"></b-form-radio-group>
-          </b-form-group>
-        </b-col>
-        <b-col cols="12" v-show="!sameTelegram">
-          <b-form-group id="telegram" label="Telegram No:" label-for="input-telegram" label-cols-lg="4" content-cols-lg :invalid-feedback="invalidNameFeedback">
-            <b-form-input id="input-telegram" v-model="formData.telegram" type="telephone" required trim :disabled="getGram === 'no'"></b-form-input>
+        <b-col cols="12" lg="6">
+          <b-form-group id="phone" label="Phone No:" label-for="input-phone">
+            <b-form-input id="input-phone" v-model="formData.phone" type="telephone" required trim></b-form-input>
           </b-form-group>
         </b-col>
         <div class="w-100 decider py-2">
@@ -43,9 +38,9 @@
       </b-form-row>
       <b-form-row class="location" title="Your Location">
         <h3 class="w-100">Your Weather location</h3>
-        <!--b-button class="mt-3" pill variant="outline-light" block @click="copyLocation()" v-show="city !== '' || location.length != 0">
+        <b-button class="mt-3" pill variant="outline-light" block @click="copyLocation()" v-show="city !== '' || location.length != 0">
           Use default location as your preferred weather location
-        </b-button-->
+        </b-button>
         <b-button class="mt-2 mb-1" pill variant="outline-warning" block @click="setLocation()">
           Set current location as your preferred weather location
         </b-button>
