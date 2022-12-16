@@ -90,7 +90,7 @@ export default {
       searchQuery: '',
       weatherOptions: menuOptions.weatherDataOptions,
       formData: {
-        fname: '', lname: '', passConfirmed: '', pass: '', email: '', getGram: 'no', phone: '', location: ''
+        oname: '', fname: '', lname: '', passConfirmed: '', pass: '', email: '', getGram: 'no', phone: '', location: ''
       }
     }
   },
