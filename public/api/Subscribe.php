@@ -5,6 +5,7 @@ include("Connect.php");
 
 $result = array('error'=>false);
 $action = '';
+$message = '';
 
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
@@ -20,6 +21,9 @@ if (isset($_GET['action'])) {
         $sql = $conn->query("INSERT INTO regular(fname, lname, email, phone, telegram, location, password) VALUES ('$fname', '$lname', '$email', '$phone', '$telegram', '$location', '$pass')");
         if($sql){
             $result['message'] = "New subscriber $fname added successfully!";
+            if ($telegram == 'yes') {
+                mail($email, 'Telegram link To Our Bot', $message);
+            }
         } else {
             $result['error'] = true;
             $result['message'] = "Failed to subscribe: " . $conn->error;
@@ -38,6 +42,9 @@ if (isset($_GET['action'])) {
         $sql = $conn->query("INSERT INTO farmer(fname, lname, email, phone, telegram, location, password) VALUES ('$fname', '$lname', '$email', '$phone', '$telegram', '$location', '$pass')");
         if($sql){
             $result['message'] = "New farmer $fname added successfully!";
+            if ($telegram == 'yes') {
+                mail($email, 'Telegram link To Our Bot', $message);
+            }
         } else {
             $result['error'] = true;
             $result['message'] = "Failed to register: " . $conn->error;
@@ -54,6 +61,7 @@ if (isset($_GET['action'])) {
         $sql = $conn->query("INSERT INTO organization(oname, email, phone, location, password) VALUES ('$orgname', '$email', '$phone', '$location', '$pass')");
         if($sql){
             $result['message'] = "New organization $orgname added successfully!";
+            mail($email, 'Telegram link To Our Bot', $message);
         } else {
             $result['error'] = true;
             $result['message'] = "Failed to register: " . $conn->error;
@@ -63,7 +71,7 @@ if (isset($_GET['action'])) {
     if ($action == 'login') {
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $pass = crypt(mysqli_real_escape_string($conn, $_POST['pword']), '$6$rounds=427$CraZyMommAkateNinYasI$');
-    $sql = $conn->query("SELECT * FROM regular LEFT JOIN farmer LEFT JOIN organization WHERE email='$email'");
+    $sql = $conn->query("SELECT * FROM regular WHERE email='$email'");
     if($sql->num_rows > 0){
         while($row = $sql->fetch_assoc()){
             if($row['password'] == $pass){
