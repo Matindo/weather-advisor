@@ -99,6 +99,7 @@ export default {
       const formData = new FormData()
       formData.append('fname', this.formData.fname)
       formData.append('lname', this.formData.lname)
+      formData.append('oname', this.formData.oname)
       formData.append('pword', this.formData.passConfirmed)
       formData.append('email', this.formData.email)
       formData.append('phone', this.formData.phone)

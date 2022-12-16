@@ -3,7 +3,7 @@ import moment from 'moment'
 export const weatherMixin = {
   data: function () {
     return {
-      apiKey: 'ed0b2d87cc61572f8ae096b3700e8d28',
+      apiKey: 'b2e0c800233938ec24c6799a64503973',
       weatherData: {
         city: '', icon: '', description: '', temp: '', humidity: '', wind: '', status: '', background: ''
       },
