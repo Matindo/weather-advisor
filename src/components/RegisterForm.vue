@@ -2,12 +2,17 @@
   <div id="register-form">
     <b-form @submit.prevent="submit()" @reset="reset()" v-show="show">
       <b-form-row class="sect" title="Personal Info">
-        <b-col cols="12" lg="6">
+        <b-col cols="12" lg="6" v-if="presets.userType !== 'Organization'">
           <b-form-group id="first-name" label="First Name:" label-for="input-first-name" label-cols-lg="4" content-cols-lg :invalid-feedback="invalidNameFeedback">
             <b-form-input id="input-first-name" v-model="formData.fname" placeholder="e.g Alex" required trim></b-form-input>
           </b-form-group>
         </b-col>
-        <b-col cols="12" lg="6">
+        <b-col cols="12" lg="6" v-if="presets.userType === 'Organization'">
+          <b-form-group id="org-name" label="Organization:" label-for="input-org-name" label-cols-lg="4" content-cols-lg :invalid-feedback="invalidNameFeedback">
+            <b-form-input id="input-org-name" v-model="formData.oname" placeholder="e.g Red Cross" required trim></b-form-input>
+          </b-form-group>
+        </b-col>
+        <b-col cols="12" lg="6" v-if="presets.userType !== 'Organization'">
           <b-form-group id="last-name" label="Other Name:" label-for="input-last-name" label-cols-lg="4" content-cols-lg :invalid-feedback="invalidNameFeedback">
             <b-form-input id="input-last-name" v-model="formData.lname" placeholder="e.g Baker" required trim></b-form-input>
           </b-form-group>
@@ -37,7 +42,6 @@
         </div>
       </b-form-row>
       <b-form-row class="location" title="Your Location">
-        <h3 class="w-100">Your Weather location</h3>
         <b-button class="mt-3" pill variant="outline-light" block @click="copyLocation()" v-show="city !== '' || location.length != 0">
           Use default location as your preferred weather location
         </b-button>
