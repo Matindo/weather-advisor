@@ -32,26 +32,6 @@ export default {
     },
     isLoggedIn: function () {
       return this.user.active
-    },
-    daytime: function () {
-      var currentHour = new Date().getHours()
-      var timeOfDay = ''
-      console.log(currentHour)
-      if (currentHour >= 19 || currentHour < 6) {
-        timeOfDay = 'night'
-      } else if (currentHour >= 6 && currentHour < 9) {
-        timeOfDay = 'morning'
-      } else if (currentHour >= 9 && currentHour < 12) {
-        timeOfDay = 'mid-morning'
-      } else if (currentHour >= 12 && currentHour < 15) {
-        timeOfDay = 'midday'
-      } else if (currentHour >= 14 && currentHour < 16) {
-        timeOfDay = 'afternoon'
-      } else if (currentHour >= 16 && currentHour < 19) {
-        timeOfDay = 'evening'
-      }
-      console.log(timeOfDay)
-      return timeOfDay
     }
   },
   methods: {
@@ -67,9 +47,6 @@ export default {
     tryLogin: function () {
       this.$root.$emit('headerLogin')
     }
-  },
-  mounted: function () {
-    document.getElementById('navbar').style.backgroundImage = `linear-gradient(to bottom, rgba(34, 34, 34, .05), rgba(5, 5, 5, .15)),url('https://source.unsplash.com/1600x900/?${this.daytime}')`
   }
 }
 </script>
@@ -84,6 +61,7 @@ export default {
   margin: 0;
   padding-inline: 2rem;
   padding-bottom: 0;
+  background-color: rgba(19, 18, 18, 0);
 }
 .navbar-brand {
   font-family: 'Lobster', cursive;

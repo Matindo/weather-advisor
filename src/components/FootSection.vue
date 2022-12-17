@@ -223,6 +223,7 @@ export default {
   grid-area: 2 / 1 / 3 / 3;
   width: 100%;
   border-top: 1px solid var(--white);
+  background-color: rgba(19, 18, 18, 0);
   display: flex;
   justify-content: center;
   align-items: center;

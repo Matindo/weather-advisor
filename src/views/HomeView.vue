@@ -281,7 +281,7 @@ section {
   gap: 1rem;
   align-items: center;
   justify-content: space-around;
-  background-color: rgb(16, 5, 41);
+  background-color: rgba(16, 5, 41, 0.822);
   width: 100%;
 }
 .jumbotron1 {

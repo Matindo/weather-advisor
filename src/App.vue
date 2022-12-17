@@ -12,9 +12,33 @@ import FootSection from './components/FootSection.vue'
 
 export default {
   components: { Navbar, FootSection },
+  computed: {
+    daytime: function () {
+      var currentHour = new Date().getHours()
+      var timeOfDay = ''
+      console.log(currentHour)
+      if (currentHour >= 19 || currentHour < 6) {
+        timeOfDay = 'night'
+      } else if (currentHour >= 6 && currentHour < 9) {
+        timeOfDay = 'morning'
+      } else if (currentHour >= 9 && currentHour < 12) {
+        timeOfDay = 'mid-morning'
+      } else if (currentHour >= 12 && currentHour < 15) {
+        timeOfDay = 'midday'
+      } else if (currentHour >= 14 && currentHour < 16) {
+        timeOfDay = 'afternoon'
+      } else if (currentHour >= 16 && currentHour < 19) {
+        timeOfDay = 'evening'
+      }
+      return timeOfDay
+    }
+  },
   created: function () {
     this.$store.dispatch('READ_DEFAULT_CITY')
     this.$store.dispatch('READ_DEFAULT_LOCATION')
+  },
+  mounted: function () {
+    document.getElementById('app').style.backgroundImage = `linear-gradient(to bottom, rgba(34, 34, 34, .05), rgba(5, 5, 5, .15)),url('https://source.unsplash.com/1600x900/?${this.daytime}')`
   }
 }
 </script>
@@ -36,7 +60,6 @@ export default {
 }
 
 #app {
-  background-image: linear-gradient(to bottom, var(--header-bg), rgba(34, 34, 34, 0.952)), url('./assets/images/a-view-of-the-stars-on-night-sky.jpg');
   background-size: cover;
   background-attachment: fixed;
   color: var(--white);
