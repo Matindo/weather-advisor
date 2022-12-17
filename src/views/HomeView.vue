@@ -4,14 +4,13 @@
       <span class="jumbotron1">
         <h1>Get current weather and forecasts from any location, any time</h1>
       </span>
-      <div class="search">
-        <input type="text" class="search-bar" placeholder="Search" v-model="searchQuery" @keyup.enter="search()" />
-        <button class="search-button" @click="search()">
-          <b-icon icon="search"></b-icon>
-        </button>
-      </div>
-      <div class="location">
-        <b-button size="sm" variant="outline-light" pill @click="locationWeather()">Get Current Location's Weather</b-button>
+      <div class="sub-jumbo">
+        <div id="search-bar">
+          <search-bar />
+        </div>
+        <div class="location">
+          <b-button size="sm" variant="outline-light" pill @click="locationWeather()">Get Current Location's Weather</b-button>
+        </div>
       </div>
       <div class="weather-bar">
         <div class="current-weather">
@@ -28,9 +27,9 @@
               </b-col>
             </div>
           </div>
-        </div>
-        <div class="description">
-          <p>*this is a 3-hour weather forecast for five days, starting from the time you refresh or reload this page</p>
+          <div class="description">
+            <p>*this is a 3-hour weather forecast for five days, starting from the time you refresh or reload this page</p>
+          </div>
         </div>
       </div>
     </section>
@@ -38,24 +37,20 @@
       <span class="jumbotron2">
         <h1>Subscribe to get customized weather messages and alerts</h1>
       </span>
-      <div class="regular-user">
-        <div class="type">
+      <div class="subscribers">
+        <div class="regular-user">
           <div class="title">Regular User</div>
           <div class="illustrate"><img src="../assets/images/Push notifications-cuate.png" alt="regular" /></div>
           <div class="info">You'll get daily alerts on weather forecasts you want to help you plan your daily activities.</div>
           <b-button class="more p-0" size="sm" variant="outline-primary" @click="regularSubscribe">Subscribe</b-button>
         </div>
-      </div>
-      <div class="farmer">
-        <div class="type">
+        <div class="farmer">
           <div class="title">Farmer</div>
           <div class="illustrate"><img src="../assets/images/Farmer-rafiki.png" alt="farmer" /></div>
           <div class="info">You'll get weekly and monthly forecasts and predictions to help you plan for your farm activities.</div>
           <b-button class="more p-0" size="sm" variant="outline-success" @click="farmerSubscribe">Subscribe</b-button>
         </div>
-      </div>
-      <div class="organization">
-        <div class="type">
+        <div class="organization">
           <div class="title">Relief Organization</div>
           <div class="illustrate">
             <img src="../assets/images/Humanitarian Help-pana.png" alt="ngo" />
@@ -96,6 +91,7 @@
 
 <script>
 import RegisterForm from '@/components/RegisterForm.vue'
+import SearchBar from '@/components/SearchBar.vue'
 import WeatherWidget from '../components/WeatherWidget.vue'
 import { locationMixin } from '@/mixins/locationMixin'
 import { weatherMixin } from '@/mixins/weatherMixin'
@@ -106,12 +102,11 @@ import axios from 'axios'
 
 export default {
   name: 'HomeView',
-  components: { RegisterForm, WeatherWidget, ForecastWidget, SnackBar },
+  components: { RegisterForm, WeatherWidget, ForecastWidget, SnackBar, SearchBar },
   mixins: [locationMixin, weatherMixin],
   data: function () {
     return {
       formOptions: { userType: 'Regular' },
-      searchQuery: '',
       formData: {
         email: '', pass: ''
       },
@@ -127,9 +122,9 @@ export default {
     })
   },
   methods: {
-    search: function () {
-      this.fetchCityWeather(this.searchQuery)
-      this.fetchCityForecast(this.searchQuery)
+    search: function (searchQuery) {
+      this.fetchCityWeather(searchQuery)
+      this.fetchCityForecast(searchQuery)
     },
     locationWeather: function () {
       this.getLocation()
@@ -212,17 +207,18 @@ export default {
     }
   },
   mounted: function () {
+    let query = ''
     if (this.city !== '') {
-      this.searchQuery = this.city
-      this.fetchCityWeather(this.searchQuery)
-      this.fetchCityForecast(this.searchQuery)
+      query = this.city
+      this.fetchCityWeather(query)
+      this.fetchCityForecast(query)
     } else if (this.location.length > 0) {
       this.fetchCoordinateWeather({ lon: this.location[0], lat: this.location[1] })
       this.fetchCoordinateForecast({ lon: this.location[0], lat: this.location[1] })
     } else {
-      this.searchQuery = 'Nairobi'
-      this.fetchCityWeather(this.searchQuery)
-      this.fetchCityForecast(this.searchQuery)
+      query = 'Nairobi'
+      this.fetchCityWeather(query)
+      this.fetchCityForecast(query)
     }
     this.$root.$on('footerSubscribe', () => {
       this.showSubscribeModal()
@@ -236,6 +232,9 @@ export default {
     this.$root.$on('headerLogin', () => {
       this.showLoginModal()
     })
+    this.$root.$on('searchbarSearch', (searchQuery) => {
+      this.search(searchQuery)
+    })
   }
 }
 </script>
@@ -245,14 +244,23 @@ export default {
   box-sizing: border-box;
   font-size: 1.5rem;
 }
-
+h1 {
+  color: var(--white);
+  font-size: 56px;
+}
+section {
+  padding-top: 1rem;
+  padding-inline: 3rem;
+  padding-bottom: 3rem;
+  width: 100%;
+}
 #home {
   display: grid;
-  grid-template-rows: min-content max-content;
-  grid-template-columns: minmax(auto, 100%);
-  grid-template-areas:
-    "weather-section"
-    "subscription-section";
+  grid-template:
+    [row1-start] "weather-section" min-content [row1-end]
+    [row2-start] "subscription-section" min-content [row2-end]
+    / auto
+  ;
   align-items: center;
   justify-content: center;
   background-size: cover;
@@ -260,41 +268,43 @@ export default {
   background-position: center;
   background-repeat: no-repeat;
 }
-section {
-  padding-top: 1rem;
-  padding-inline: 3rem;
-  padding-bottom: 3rem;
-}
+
 .weather {
   grid-area: weather-section;
   display: grid;
-  grid-template-rows: min-content min-content auto;
-  grid-template-columns: repeat(6, 1fr);
-  grid-template-areas:
-    "jumbo jumbo jumbo jumbo jumbo jumbo"
-    "search search search button button button"
-    "weather weather weather weather weather weather"
-    ;
-  grid-row-gap: 1rem;
+  grid-template:
+    [row1-start] "jumbo" min-content [row1-end]
+    [row2-start] "sub-jumbo" min-content [row2-end]
+    [row3-start] "weather" min-content [row3-end]
+    / auto
+  ;
+  gap: 1rem;
   align-items: center;
   justify-content: space-around;
   background-color: rgb(16, 5, 41);
-}
-
-.search {
-  grid-area: search;
-  justify-self: right;
-  display: flex;
-  justify-content: right;
   width: 100%;
 }
-
+.jumbotron1 {
+  grid-area: jumbo;
+}
+.sub-jumbo {
+  grid-area: sub-jumbo;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-around;
+  justify-self: center;
+  width: 70%;
+}
+#search-bar {
+  width: 50%;
+}
 .location {
-  grid-area: button;
-  justify-self: left;
-  display: flex;
-  justify-content: left;
-  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(400px, auto);
+  grid-template-rows: min-content;
+  justify-content: center;
+  width: 50%;
   button {
     font-size: 1rem;
     padding: 5px;
@@ -304,23 +314,17 @@ section {
 }
 .weather-bar {
   grid-area: weather;
-  display: grid;
-  grid-template-rows: min-content min-content;
-  grid-template-columns: 1fr 2fr;
-  grid-template-areas:
-    "widget forecast forecast"
-    "widget describe describe"
-  ;
-  column-gap: 1rem;
+  display: flex;
+  flex-wrap: wrap;
   justify-content: space-around;
   align-items: flex-start;
   padding-top: 1rem;
+  width: 100%;
 }
 .current-weather {
-  grid-area: widget;
   display: grid;
   grid-template:
-    [row1-start] "weather-widget" auto [row1-end]
+    [row1-start] "weather-widget" min-content [row1-end]
     [row2-start] "action-call" min-content [row2-end]
     [row3-start] "button-action" min-content [row3-end]
     / auto
@@ -328,6 +332,7 @@ section {
   text-align: center;
   align-items: center;
   justify-content: center;
+  width: 40%;
   margin-top: 2rem;
   button {
     font-size: 1rem;
@@ -336,11 +341,45 @@ section {
     margin-inline: 1rem;
   }
 }
-
 .forecast {
-  grid-area: forecast;
+  display: grid;
+  grid-template:
+    [row1-start]"week-forecast" min-content[row1-end]
+    [row2-start]"describe" min-content[row2-end]
+    / auto
+  ;
+  width: 60%;
 }
-
+#week-forecast {
+  grid-area: week-forecast;
+  display: grid;
+  width: 100%;
+  #casts {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    padding: .5rem;
+    background-color: var(--component-bg);
+    .columns {
+      min-width: 380px;
+    }
+    &::-webkit-scrollbar {
+      height: 10px;
+    }
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: var(--success);
+      &:hover {
+        background: rgb(13, 80, 10);
+      }
+    }
+  }
+}
 .description {
   grid-area: describe;
   p {
@@ -352,142 +391,100 @@ section {
 .subscription {
   grid-area: subscription-section;
   display: grid;
-  grid-template-rows: min-content min-content;
-  grid-template-columns: 50px 1fr 1fr 1fr 50px;
-  grid-row-gap: 1rem;
-  column-gap: 1.5rem;
+  grid-template:
+    [row1-start]"jumbo-line" min-content[row1-end]
+    [row2-start]"subscribers" min-content[row2-end]
+    / auto
+  ;
+  gap: 1rem;
   align-items: center;
   justify-content: space-around;
   width: 100%;
   color: var(--black);
   background-color: var(--brilliant-white);
-  span > h1 {
-    color: var(--navigation-bg);
-  }
-  .regular-user {
-    grid-area: 2 / 2 / 3 / 2;
-  }
-  .farmer {
-    grid-area: 2 / 3 / 3 / 4;
-  }
-  .organization {
-    grid-area: 2 / 4 / 3 / 5;
+}
+.jumbotron2 {
+  grid-area: jumbo-line;
+  h1 {
+    color: var(--black);
   }
 }
-.organization, .farmer, .regular-user {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border-radius: 20px;
-}
-h1 {
-  color: var(--white);
-  font-size: 56px;
-}
-input.search-bar {
-  border: none;
-  outline: none;
-  border-radius: 24px;
-  background: var(--bg-black);
-  color: var(--white);
-  font-family: inherit;
-  margin-right: 1rem;
-  padding-inline: 0.7rem;
-}
-.search-button {
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  border: none;
-  height: 32px;
-  width: 35px;
-  outline: none;
-  background: var(--bg-black);
-  color: var(--brilliant-white);
-  cursor: pointer;
-  transition: 0.2s ease-in-out;
-}
-
 .jumbotron1, .jumbotron2 {
   text-align: center;
   font-family: Georgia, 'Times New Roman', Times, serif;
 }
-
-.jumbotron1 {
-  grid-area: jumbo;
-}
-.jumbotron2 {
-  grid-area: 1 / 1 / 2 / end;
-}
-#casts {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: center;
-  overflow-x: scroll;
-  overflow-y: hidden;
-  width: 100%;
-  padding: .5rem;
-  background-color: var(--component-bg);
-  &::-webkit-scrollbar {
-    height: 10px;
-  }
-  &::-webkit-scrollbar-track {
-    background: #f1f1f1;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: var(--success);
-    &:hover {
-      background: rgb(13, 80, 10);
-    }
-  }
-}
-.columns {
-  min-width: 380px;
-}
-.type {
+.subscribers {
+  grid-area: subscribers;
   display: grid;
-  grid-template-rows: min-content min-content min-content min-content;
-  grid-template-columns: auto;
-  width: 100%;
-  height: 100%;
+  padding-inline: 3rem;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: min-content;
+  column-gap: 1.5rem;
+  grid-auto-flow: row dense;
+}
+.organization, .farmer, .regular-user {
+  display: grid;
+  grid-template:
+    [row1-start]"title" min-content[row1-end]
+    [row2-start]"illustrate" min-content[row2-end]
+    [row3-start]"info" min-content[row3-end]
+    [row4-start]"more" min-content[row4-end]
+    / auto
+  ;
   align-items: flex-start;
   justify-content: center;
+  width: 100%;
+  border-radius: 20px;
+  padding: 30px;
   border: 1px solid var(--component-bg);
   background-color: var(--component-bg);
-  border-radius: 12px;
   .title {
-    grid-area: 1 / 1 / 2 / 2;
+    grid-area: title;
     text-align: center;
     font-weight: bolder;
   }
   .illustrate {
-    grid-area: 2 / 1 / 3 / 2;
+    grid-area: illustrate;
     display: flex;
     justify-content: center;
     img {
-      width: auto;
-      height: 300px;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      aspect-ratio: 1.5;
     }
   }
   .info {
-    grid-area: 3 / 1 / 4 / 2;
+    grid-area: info;
     text-align: center;
     width: 100%;
     padding: 15px;
     font-size: 1.1rem;
   }
   .more {
-    grid-area: 4 / 1 / 5 / 2;
+    grid-area: more;
     width: 70%;
     justify-self: center;
     font-size: 1.1rem;
     margin-bottom: 22px;
   }
 }
-@media all and (max-width: 540px) {
-  .subscription, .current-weather, .weather, .weather-bar, .type, #home {
-    grid-auto-flow: row dense;
+
+@media all and (max-width: 900px) {
+  .subscribers {
+    padding-inline: 1rem;
+    grid-template-columns: auto;
+    gap: 1.5rem;
   }
+  .organization, .farmer, .regular-user {
+    margin-inline: 1rem;
+  }
+  .sub-jumbo {
+    width: 100%;
+    justify-content: space-evenly;
+  }
+  .current-weather { width: 100%; }
+  .forecast { width: 100%; margin-top: 9px; }
+  #search-bar { width: 60%; }
 }
 </style>

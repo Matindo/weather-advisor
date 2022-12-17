@@ -32,6 +32,7 @@ export default {
   --hover-grey: #7c7c7c6b;
   --header-bg: rgba(34, 34, 34, 0.87);
   --navigator-bg: rgba(10, 9, 7, 0.945);
+  transition: all .5s ease-in-out;
 }
 
 #app {

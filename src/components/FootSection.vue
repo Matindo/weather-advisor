@@ -1,30 +1,31 @@
 <template>
-  <div id="foot-section">
-    <div id="brand">
-      <span class="logo"><img src='../assets/images/logo.png' class="logo-img" /><h1 class="mb-0">Misimu</h1></span>
-      <span><h5 class="my-0">Your One-Stop weather App</h5></span>
-    </div>
-    <div id="footer-content">
-      <h3 class="weather">Get Your Weather</h3>
-      <b-input-group size="sm" class="my-2 search">
-        <b-input-group-append is-text @click="searchWeather()">
-          <b-icon icon="search"></b-icon>
-        </b-input-group-append>
-        <b-form-input type="search" placeholder="Search any city's weather" v-model="city" @keypress.enter="search()"></b-form-input>
-      </b-input-group>
-      <b-button class="weather-getter my-0" variant="outline-light" pill @click="locationWeather()">Get Current Location's Weather</b-button>
-      <div class="subscribe">
-        <h3>Get Notified</h3>
-        <b-button variant="outline-warning" class="w-75 my-2 mx-auto" block @click="subscribe()">Subscribe & Get Alerts</b-button>
+  <div id="footer">
+    <div id="foot-section">
+      <div id="brand">
+        <span class="logo"><img src='../assets/images/logo.png' class="logo-img" /><h1 class="mb-0">Misimu</h1></span>
+        <span><h5 class="my-0">Your One-Stop weather App</h5></span>
       </div>
-      <div class="socials">
-        <ul class="social-links">
-          <li class="social-link"><a id="discord" href="#"><b-icon font-scale="2" icon="discord"></b-icon></a></li>
-          <li class="social-link"><a id="twitter" href="#"><b-icon font-scale="2" icon="twitter"></b-icon></a></li>
-          <li class="social-link"><a id="github" href="#"><b-icon font-scale="2" icon="github"></b-icon></a></li>
-          <li class="social-link"><a id="whatsapp" href="#"><b-icon font-scale="2" icon="whatsapp"></b-icon></a></li>
-          <li class="social-link"><a id="telegram" href="#"><b-icon font-scale="2" icon="telegram"></b-icon></a></li>
-        </ul>
+      <div id="footer-content">
+        <h3 class="weather">Get Your Weather</h3>
+        <div id="weather-getter">
+          <div id="search-bar">
+            <search-bar />
+          </div>
+          <b-button class="loc-weather my-0 px-0" variant="outline-light" pill @click="locationWeather()">Get Current Location's Weather</b-button>
+        </div>
+        <div class="subscribe">
+          <h3>Get Notified</h3>
+          <b-button variant="outline-warning" class="w-75 my-2 mx-auto" block @click="subscribe()">Subscribe & Get Alerts</b-button>
+        </div>
+        <div class="socials">
+          <ul class="social-links">
+            <li class="social-link"><a id="discord" href="#"><b-icon font-scale="2" icon="discord"></b-icon></a></li>
+            <li class="social-link"><a id="twitter" href="#"><b-icon font-scale="2" icon="twitter"></b-icon></a></li>
+            <li class="social-link"><a id="github" href="#"><b-icon font-scale="2" icon="github"></b-icon></a></li>
+            <li class="social-link"><a id="whatsapp" href="#"><b-icon font-scale="2" icon="whatsapp"></b-icon></a></li>
+            <li class="social-link"><a id="telegram" href="#"><b-icon font-scale="2" icon="telegram"></b-icon></a></li>
+          </ul>
+        </div>
       </div>
     </div>
     <div id="copyright">
@@ -35,18 +36,17 @@
 
 <script>
 import { locationMixin } from '@/mixins/locationMixin'
+import SearchBar from './SearchBar.vue'
 
 export default {
   name: 'FootSection',
   mixins: [locationMixin],
+  components: { SearchBar },
   data: function () { return { city: '' } },
   methods: {
     locationWeather: function () {
       this.getLocation()
       this.$store.dispatch('SET_LOCATION', [this.longitude, this.lattitude]).then(() => this.$router.push('/'))
-    },
-    search: function () {
-      this.$store.dispatch('SET_CITY', this.city).then(() => this.$router.push('/'))
     },
     subscribe: function () {
       this.$root.$emit('footerSubscribe')
@@ -58,12 +58,8 @@ export default {
 <style lang="scss" scoped>
 #foot-section {
   background-color: var(--navigator-bg);
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  grid-template-rows: auto min-content;
-  grid-auto-flow: row;
-  column-gap: 2rem;
-  row-gap: .8rem;
+  display: flex;
+  flex-wrap: wrap;
   padding: 5px 3rem;
   transition: 0.14s all ease-out;
   color: var(--white);
@@ -72,6 +68,7 @@ export default {
   justify-content: center;
 }
 #brand {
+  width: 35%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -89,14 +86,11 @@ export default {
     text-align: center;
   }
 }
-#brand {
-  grid-area: 1 / 1 / 2 / 2;
-}
 #footer-content {
-  grid-area: 1 / 2 / 2 / 3;
+  width: 65%;
   display: grid;
   grid-template-rows: min-content min-content min-content min-content;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, 1fr);
   align-items: flex-start;
   justify-content: center;
   padding: 1rem;
@@ -106,12 +100,19 @@ export default {
   width: 100%;
   text-align: center;
 }
-.search {
-  grid-area: 2 / 1 / 3 / 2;
-}
-.weather-getter {
-  grid-area: 2 / 2 / 3 / 3;
+#weather-getter {
+  grid-area: 2 / 1 / 3 / end;
   margin-left: 1rem;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  #search-bar {
+    width: 50%;
+  }
+  .loc-weather {
+    width: 50%;
+  }
 }
 .subscribe {
   grid-area: 3 / 1 / 4 / end;
@@ -226,5 +227,16 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 15px;
+}
+
+@media all and (max-width: 920px) {
+  #foot-section {
+    padding-inline: 1rem;
+    #brand, #footer-content {
+      width: 100%;
+    }
+  }
+  .loc-weather { width: 100%; }
+  #search-bar { width: 100%; }
 }
 </style>
